@@ -55,11 +55,10 @@ analytics: none # PLACEHOLDER: none, or a privacy-friendly option
 
 work:
   # PLACEHOLDER: not approved yet. No employer, product or client is named, and no team size.
-  # The figures are from my own work on one production platform.
   summary: 'PLACEHOLDER: I lead the engineering team behind a portfolio accounting platform for crypto and traditional assets. Most of what I solve there is scheduling: what runs next, on which worker, and what happens when that worker dies.'
   # Scheduling problems, each with the answer I used.
   problems:
-    - problem: 'Reshape a 3.6-billion-row table while it takes writes.'
+    - problem: 'Reshape a very large table while it takes writes.'
       answer: 'Write to both shapes. Backfill the oldest year first. Make every write an idempotent upsert. Move the reads last.'
     - problem: 'Keep one long backfill from starving everything else.'
       answer: 'Give it a queue of its own. Scale the workers on backlog per pod, not on queue length.'
@@ -67,20 +66,14 @@ work:
       answer: 'A lock that does not block. The second request records itself and leaves; the first one picks it up.'
     - problem: 'Survive a worker that dies halfway.'
       answer: 'Heartbeat leases and resumable chunks. The next worker starts from the last checkpoint.'
-  # The scale, as figures. `figure` is set large; `label` explains it.
-  scale:
-    - figure: '3.6 B'
-      label: 'rows in one table, partitioned with zero downtime'
-    - figure: '80 s → 41 ms'
-      label: 'the slowest transaction lookup, after a new index and a rewritten query'
-    - figure: '150 s → 0.8 s'
-      label: 'a reconciliation read that used to time out'
-    - figure: '100+'
-      label: 'exchanges, blockchains and custodians synced into one ledger'
-    - figure: '60 s'
-      label: 'price refresh, into a 1.3 TB partitioned history'
-    - figure: '18,000+'
-      label: 'accounts on one tax-lot and cost-basis engine'
+  # Questions, not figures. No numbers from work are published.
+  questions:
+    - 'What runs next?'
+    - 'Who holds the lock when the holder is dead?'
+    - 'Is it finished, or did it only stop?'
+    - 'Can it run twice and still be right?'
+    - 'What does it cost to be exactly correct?'
+    - 'Does it still work at a thousand times the size?'
   focus:
     - Distributed systems
     - PostgreSQL internals
