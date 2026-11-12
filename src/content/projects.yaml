@@ -1,0 +1,23 @@
+# Featured repos, in display order. Only public repos ship.
+# `blurb` overrides the GitHub description. `owner` defaults to site.yaml `github`.
+#
+# PLACEHOLDER: this order is a draft from the public repos on github.com/shrshk.
+# Plan candidates that have no public repo today and so are left out:
+#   Guess the Pass, Local Muse (private), IMAX ticket monitor.
+
+projects:
+  - repo: doodle-games
+    title: Doodle Snakes & Ladders
+    blurb: 'Board games drawn like crayon doodles. Local and online play.'
+    url: https://games.shirishve.com
+  - repo: ticker-watch-case-study
+    title: Ticker Watch
+    blurb: 'A live stock watchlist built to find where polling breaks and push earns its place.'
+  - repo: claude-code-inbox
+    title: Claude Code Inbox
+  - repo: recipes
+    title: Highchair Chef
+  - repo: whatsapp-mcp
+    title: WhatsApp MCP
+  - repo: mimir-flix
+    title: mimir-flix

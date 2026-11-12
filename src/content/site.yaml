@@ -1,0 +1,59 @@
+# All site copy and links. Edit here; no code changes needed.
+# Values marked PLACEHOLDER are not approved yet and must be replaced before launch.
+
+name: Shirish Veerabattini
+shortName: Shirish
+role: Engineering Manager and Staff Engineer
+url: https://shirishve.com
+
+# PLACEHOLDER: one sentence under the name.
+tagline: 'PLACEHOLDER: I lead a team and still read query plans.'
+
+# PLACEHOLDER: short bio, first person, short sentences.
+bio:
+  - 'PLACEHOLDER: I manage engineers and I still write code.'
+  - 'PLACEHOLDER: I like databases, distributed systems, and problems with a number at the end.'
+
+location: North Texas
+
+github: shrshk
+
+# One line per profile. Any platform with a Simple Icons slug gets its icon;
+# the rest get a plain lettered seal.
+socials:
+  - platform: github
+    url: https://github.com/shrshk
+  # PLACEHOLDER: add LinkedIn, X, Instagram, YouTube URLs.
+  # - platform: linkedin
+  #   url: https://www.linkedin.com/in/PLACEHOLDER
+
+# PLACEHOLDER: the address to show, or leave empty and use a form.
+email: ''
+
+resume:
+  enabled: false # PLACEHOLDER: yes or no
+  path: /resume.pdf
+
+analytics: none # PLACEHOLDER: none, or a privacy-friendly option
+
+career:
+  # PLACEHOLDER: years and one line each; only what is cleared to say.
+  - org: Deloitte
+  - org: Capgemini
+  - org: DealerSocket
+  - org: Goldman Sachs
+  - org: MG Stover
+education:
+  - 'M.S., University of Texas at Arlington'
+
+work:
+  # PLACEHOLDER: needs clearance for what can be said about Otto and MG Stover.
+  # Kept general on purpose: no product name and no team size until that is cleared.
+  summary: 'PLACEHOLDER: I lead an engineering team that builds a portfolio platform for digital and traditional assets.'
+  focus:
+    - Distributed systems
+    - PostgreSQL internals
+    - AWS EKS
+    - Python, Celery and Redis
+    - LLM integration
+  explainNote: 'Seq Scan on consulting, Index Scan on fintech'

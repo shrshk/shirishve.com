@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import Frame from '../components/Frame.astro';
+import MarginNote from '../components/MarginNote.astro';
+import Surface from '../components/Surface.astro';
+---
+
+<Base title="Offside" description="This page does not exist." noindex>
+  <Surface name="wall" seed={404} label="Page not found">
+    <div class="wrap lost">
+      <Frame tilt={-2.2} alt="An empty frame: bare canvas, never painted">
+        <Fragment slot="plate">
+          <strong class="plate-title">Untitled</strong>
+          <span class="mono plate-stats">404 · canvas, no paint</span>
+        </Fragment>
+      </Frame>
+      <div>
+        <h1>Offside.</h1>
+        <p class="lede">This canvas was never painted.</p>
+        <p>
+          <a class="btn paint" href="/">
+            Back to the night sky
+          </a>
+        </p>
+        <MarginNote rotate={-2} arrow="left">
+          the flag was up early.
+        </MarginNote>
+      </div>
+    </div>
+  </Surface>
+</Base>
+
+<style>
+  .lost {
+    display: grid;
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    gap: 3rem clamp(2rem, 7vw, 6rem);
+    align-items: center;
+    min-height: 60svh;
+  }
+  .lost h1 {
+    font-size: var(--step-4);
+  }
+  .lost .btn {
+    margin: 0.6rem 0 2rem;
+  }
+  @media (max-width: 46rem) {
+    .lost {
+      grid-template-columns: minmax(0, 15rem);
+      justify-content: center;
+    }
+  }
+</style>

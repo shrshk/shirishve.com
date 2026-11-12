@@ -1,0 +1,39 @@
+---
+// One section of the painting: a ground colour, its brushwork, the edge of the next section,
+// canvas grain over all of that, then the content.
+import BrushField from './BrushField.astro';
+import type { SurfaceName } from '../lib/palette';
+
+interface Props {
+  name: SurfaceName;
+  seed?: number;
+  id?: string;
+  label?: string;
+}
+const { name, seed = 1, id, label } = Astro.props;
+---
+
+<section class:list={['surface', `surface--${name}`]} id={id} aria-label={label}>
+  <BrushField surface={name} seed={seed} />
+  <slot name="divider" />
+  <div class="surface__grain" aria-hidden="true"></div>
+  <slot />
+</section>
+
+<style>
+  .surface {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    padding-block: var(--section-pad) calc(var(--section-pad) + clamp(48px, 9vw, 110px));
+  }
+  .surface__grain {
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    background-size: 256px 256px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+</style>

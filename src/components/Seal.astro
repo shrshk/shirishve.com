@@ -1,0 +1,122 @@
+---
+// A social link as a painted wax seal. The brand icon is the unmodified Simple Icons path.
+// A platform that Simple Icons does not carry gets a plain lettered seal instead.
+import * as icons from 'simple-icons';
+import { blob, rng } from '../lib/brush';
+
+interface Props {
+  platform: string;
+  url: string;
+  /** Accessible name. Defaults to the platform title. */
+  label?: string;
+  tone?: 'chrome' | 'cobalt' | 'blossom' | 'vermilion';
+  /** Letter for the fallback seal. Defaults to the platform's first letter. */
+  letter?: string;
+  caption?: boolean;
+}
+const { platform, url, tone = 'chrome', caption = true } = Astro.props;
+
+const key = 'si' + platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
+const icon = (icons as unknown as Record<string, { title: string; path: string } | undefined>)[key];
+const title = Astro.props.label ?? icon?.title ?? platform.charAt(0).toUpperCase() + platform.slice(1);
+const letter = Astro.props.letter ?? platform.charAt(0).toUpperCase();
+
+// Seed from the name, so each seal keeps its own shape between builds.
+const seed = [...platform].reduce((n, c) => n * 31 + c.charCodeAt(0), 7);
+const rand = rng(seed);
+const turn = Math.round((rand() - 0.5) * 16);
+const external = /^https?:/.test(url);
+---
+
+<a
+  class:list={['seal', `seal--${tone}`]}
+  href={url}
+  aria-label={title}
+  rel={external ? 'me noopener' : undefined}
+>
+  <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false">
+    <g class="seal__wax" style={`rotate:${turn}deg`}>
+      <path class="seal__drip" d={blob(seed + 1, 30, 32, 32, 11, 0.16)}></path>
+      <path class="seal__face" d={blob(seed, 24, 32, 32, 9, 0.06)}></path>
+      <circle class="seal__ring" cx="32" cy="32" r="20.5"></circle>
+    </g>
+    {icon ? (
+      <path class="seal__icon" d={icon.path} transform="translate(21 21) scale(0.9167)" />
+    ) : (
+      <text class="seal__letter" x="32" y="33" text-anchor="middle" dominant-baseline="middle">
+        {letter}
+      </text>
+    )}
+  </svg>
+  {caption && <span class="seal__caption">{title}</span>}
+</a>
+
+<style>
+  .seal {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    text-decoration: none;
+    color: var(--text);
+    --wax: var(--chrome);
+    --wax-edge: var(--ochre);
+    --mark: var(--night);
+  }
+  .seal--cobalt {
+    --wax: var(--cobalt);
+    --wax-edge: var(--night);
+    --mark: var(--canvas);
+  }
+  .seal--blossom {
+    --wax: var(--blossom);
+    --wax-edge: #4f8f86;
+    --mark: var(--night);
+  }
+  .seal--vermilion {
+    --wax: var(--vermilion);
+    --wax-edge: #9c1512;
+    --mark: #ffffff;
+  }
+  .seal svg {
+    overflow: visible;
+  }
+  .seal__wax {
+    transform-origin: 32px 32px;
+    filter: url(#impasto);
+  }
+  .seal__drip {
+    fill: var(--wax-edge);
+  }
+  .seal__face {
+    fill: var(--wax);
+  }
+  .seal__ring {
+    fill: none;
+    stroke: var(--wax-edge);
+    stroke-width: 1.2;
+    stroke-dasharray: 3 2.2;
+    stroke-linecap: round;
+  }
+  .seal__icon {
+    fill: var(--mark);
+  }
+  .seal__letter {
+    fill: var(--mark);
+    font-family: var(--font-display);
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .seal__caption {
+    font-family: var(--font-hand);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  .seal:hover .seal__caption {
+    text-decoration: underline wavy;
+    text-decoration-thickness: 1px;
+  }
+</style>

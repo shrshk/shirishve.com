@@ -1,0 +1,45 @@
+---
+// The way a canvas is signed: small, in a lower corner. Decorative, so hidden from assistive tech.
+import { wobble } from '../lib/brush';
+import { site } from '../lib/content';
+
+interface Props {
+  seed?: number;
+  tone?: string;
+}
+const { seed = 1, tone } = Astro.props;
+---
+
+<span class="signature" aria-hidden="true" style={tone ? `color:${tone}` : undefined}>
+  {site.shortName}
+  <svg viewBox="0 0 110 12" width="110" height="12">
+    <path d={wobble(seed, 110, 3)}></path>
+  </svg>
+</span>
+
+<style>
+  .signature {
+    position: absolute;
+    right: 0;
+    bottom: calc(var(--section-pad) * -0.55);
+    display: inline-flex;
+    flex-direction: column;
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 1.7rem;
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--heading);
+    rotate: -5deg;
+    opacity: 0.9;
+  }
+  .signature svg {
+    margin-top: -2px;
+  }
+  .signature path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+</style>

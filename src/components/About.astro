@@ -1,0 +1,131 @@
+---
+// Section 2: a sunlit room. Dawn.
+import BrushDivider from './BrushDivider.astro';
+import BrushField from './BrushField.astro';
+import Frame from './Frame.astro';
+import MarginNote from './MarginNote.astro';
+import Signature from './Signature.astro';
+import Surface from './Surface.astro';
+import VermilionStroke from './VermilionStroke.astro';
+import { show, site } from '../lib/content';
+import { palette } from '../lib/palette';
+
+// Stand-in for the headshot: the colours of a sunlit room.
+const room = [
+  { color: '#8FC1D8', opacity: 0.9, weight: 4 },
+  { color: palette.blossom, opacity: 0.85, weight: 2 },
+  { color: palette.chrome, opacity: 0.9, weight: 3 },
+  { color: palette.ochre, opacity: 0.85, weight: 2 },
+  { color: '#B9552E', opacity: 0.8, weight: 1 },
+];
+---
+
+<Surface name="canvas" seed={23} id="about">
+  <div class="wrap about">
+    <div class="about__words">
+      <h2>About</h2>
+      {site.bio.map((p) => (
+        <p>{show(p)}</p>
+      ))}
+
+      <h3>The road here</h3>
+      <ol class="road">
+        {site.career.map((c) => (
+          <li>
+            <strong>{c.org}</strong>
+            {c.years && <span class="mono muted">{c.years}</span>}
+            {c.line && <span>{show(c.line)}</span>}
+          </li>
+        ))}
+      </ol>
+      <VermilionStroke seed={7} width="5rem" />
+      <p class="about__school">{site.education.join(' · ')}</p>
+    </div>
+
+    <div class="about__portrait">
+      <Frame
+        tilt={1.4}
+        ratio="4 / 5"
+        alt="A stand-in for a portrait: a sunlit room in blue and yellow strokes"
+      >
+        <BrushField
+          seed={41}
+          fit
+          base="#A9D0DF"
+          width={320}
+          height={400}
+          strokes={room}
+          cell={17}
+          length={[26, 60]}
+          thickness={[7, 14]}
+          angle={1.1}
+          swirl={0.9}
+        />
+        <Fragment slot="plate">
+          <strong class="plate-title">Self-portrait</strong>
+          <span class="mono plate-stats">pending a sitting</span>
+        </Fragment>
+      </Frame>
+      <div class="about__note">
+        <MarginNote rotate={-3} arrow="up-left">
+          the desk is remote. so is the team.
+        </MarginNote>
+      </div>
+    </div>
+    <Signature seed={5} />
+  </div>
+  <BrushDivider slot="divider" to="wheat" seed={47} />
+</Surface>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    gap: 3rem clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .about h3 {
+    margin-top: 2.2rem;
+  }
+  .road {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0;
+    padding: 0;
+    margin: 0 0 1.6rem;
+    list-style: none;
+  }
+  .road li {
+    display: grid;
+  }
+  .road li:not(:last-child) {
+    padding-right: 2.6rem;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 14'%3E%3Cpath d='M2 8C8 5 16 9 26 7M20 2 27 7 20 12' fill='none' stroke='%23101B3B' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      no-repeat right 0.6rem top 0.45em / 1.6rem auto;
+  }
+  .road li:last-child strong {
+    text-decoration: underline wavy var(--ochre);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.25em;
+  }
+  .about__school {
+    margin-top: 0.9rem;
+  }
+  .about__portrait {
+    max-width: 21rem;
+    justify-self: center;
+    width: 100%;
+  }
+  .about__note {
+    margin-top: 1.4rem;
+    padding-left: 2rem;
+  }
+  @media (max-width: 46rem) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+    .about__portrait {
+      max-width: 17rem;
+    }
+  }
+</style>

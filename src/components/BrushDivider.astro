@@ -1,0 +1,43 @@
+---
+// The next section's paint, dragged up into this one along a ragged edge.
+// Place it in a Surface's "divider" slot.
+import { raggedEdge, streaks } from '../lib/brush';
+import { blend, surfaces, type SurfaceName } from '../lib/palette';
+
+interface Props {
+  to: SurfaceName;
+  seed?: number;
+}
+const { to, seed = 1 } = Astro.props;
+const next = surfaces[to];
+const under = blend(next.strokes[1].color, next.base, next.strokes[1].opacity);
+const mid = blend(next.strokes[0].color, next.base, next.strokes[0].opacity);
+---
+
+<svg
+  class="brush-divider"
+  viewBox="0 0 1200 100"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={streaks(seed + 7, 9)} stroke={next.base} stroke-width="3" stroke-opacity="0.55" fill="none"></path>
+  <path d={raggedEdge(seed + 3, { reach: 0.8 })} fill={under}></path>
+  <path d={raggedEdge(seed + 5, { reach: 0.66 })} fill={mid}></path>
+  <path d={raggedEdge(seed, { reach: 0.5 })} fill={next.base}></path>
+</svg>
+
+<style>
+  .brush-divider {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: clamp(48px, 9vw, 110px);
+    pointer-events: none;
+  }
+  .brush-divider path {
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+  }
+</style>

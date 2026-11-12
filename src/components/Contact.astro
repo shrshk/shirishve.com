@@ -1,0 +1,124 @@
+---
+// Section 6: a letter on a desk under the night sky. The page ends where it began.
+import MarginNote from './MarginNote.astro';
+import Seal from './Seal.astro';
+import Signature from './Signature.astro';
+import StarHalo from './StarHalo.astro';
+import Surface from './Surface.astro';
+import VermilionStroke from './VermilionStroke.astro';
+import { site } from '../lib/content';
+
+const tones = ['chrome', 'cobalt', 'blossom'] as const;
+const year = new Date().getFullYear();
+---
+
+<Surface name="night" seed={79} id="contact">
+  <div class="wrap contact">
+    <div class="contact__stars" aria-hidden="true">
+      <StarHalo seed={9} size="clamp(3.4rem, 8vw, 5.5rem)" rings={3} />
+      <StarHalo seed={21} size="clamp(2.4rem, 5vw, 3.6rem)" rings={3} />
+    </div>
+    <h2>Contact</h2>
+
+    <div class="letter paint">
+      <p class="letter__hello">Write to me.</p>
+      <p>I read everything. I answer most of it.</p>
+      {site.email && (
+        <p>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </p>
+      )}
+      {site.resume.enabled && (
+        <p>
+          <a href={site.resume.path}>Résumé (PDF)</a>
+        </p>
+      )}
+      <p class="letter__sign">{site.shortName}</p>
+    </div>
+
+    <ul class="contact__seals">
+      {site.socials.map((s, i) => (
+        <li>
+          <Seal platform={s.platform} url={s.url} tone={tones[i % tones.length]} />
+        </li>
+      ))}
+    </ul>
+
+    <footer class="colophon">
+      <VermilionStroke seed={29} width="4.5rem" />
+      <p class="mono">
+        The sky at the top is the curl of a noise field: about 4,000 strokes, repainted every frame, no
+        images.
+      </p>
+      <p class="mono muted">
+        © {year} {site.name} · {site.location} · <a href="/styleguide/">styleguide</a> ·{' '}
+        <a href="#top">back to night</a>
+      </p>
+      <MarginNote rotate={-2}>and then it is night again.</MarginNote>
+    </footer>
+    <Signature seed={31} />
+  </div>
+</Surface>
+
+<style>
+  .contact {
+    display: grid;
+    gap: 2.2rem;
+  }
+  .contact h2 {
+    margin: 0;
+  }
+  .contact__stars {
+    position: absolute;
+    top: -2rem;
+    right: 2%;
+    display: flex;
+    align-items: flex-end;
+    gap: 1.6rem;
+  }
+  .letter {
+    --paint: #f7efd9;
+    width: min(100%, 27rem);
+    padding: 1.8rem 2rem 1.6rem;
+    color: var(--night);
+    --link: var(--cobalt);
+    rotate: -1.4deg;
+  }
+  .letter p {
+    margin-bottom: 0.6em;
+  }
+  .letter__hello {
+    font-family: var(--font-display);
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+    font-size: var(--step-2);
+    font-weight: 650;
+    line-height: 1.05;
+  }
+  .letter__sign {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-hand);
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: right;
+  }
+  .contact__seals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem 2rem;
+    padding: 0;
+    margin: 0.4rem 0 0;
+    list-style: none;
+  }
+  .colophon {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+  .colophon p {
+    margin: 0;
+    max-width: 52ch;
+  }
+</style>

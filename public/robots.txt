@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /styleguide/
+
+Sitemap: https://shirishve.com/sitemap.xml

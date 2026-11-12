@@ -1,0 +1,215 @@
+---
+// The hero sky: a canvas that paints itself, and an overlay that joins the stars into a B-tree.
+// It expects to sit in a <section> that has a [data-calm] text block and may have a [data-join] button.
+---
+
+<div class="sky" data-sky>
+  <canvas
+    class="sky__canvas"
+    role="img"
+    aria-label="A night sky painted in short swirling blue strokes. Ten yellow stars turn slowly in it."
+  ></canvas>
+  <svg class="sky__tree" aria-hidden="true" focusable="false"></svg>
+</div>
+
+<script>
+  import { mountSky, type PlacedStar, type StarSpec } from '../lib/sky';
+
+  // A small, valid B-tree: a root with two keys, three internal nodes, six leaves.
+  const NODES = [
+    { keys: '40 | 70', parent: -1 },
+    { keys: '15', parent: 0 },
+    { keys: '55', parent: 0 },
+    { keys: '85', parent: 0 },
+    { keys: '5 | 9', parent: 1 },
+    { keys: '22', parent: 1 },
+    { keys: '47', parent: 2 },
+    { keys: '61 | 66', parent: 2 },
+    { keys: '78', parent: 3 },
+    { keys: '93', parent: 3 },
+  ];
+  // Wide screens: the tree sits to the right of the text.
+  const landscape: StarSpec[] = [
+    { x: 0.73, y: 0.15, r: 0.085 },
+    { x: 0.57, y: 0.37, r: 0.05 },
+    { x: 0.75, y: 0.42, r: 0.05 },
+    { x: 0.92, y: 0.34, r: 0.05 },
+    { x: 0.51, y: 0.6, r: 0.03 },
+    { x: 0.61, y: 0.65, r: 0.03 },
+    { x: 0.7, y: 0.66, r: 0.03 },
+    { x: 0.79, y: 0.68, r: 0.03 },
+    { x: 0.88, y: 0.61, r: 0.03 },
+    { x: 0.96, y: 0.56, r: 0.03 },
+  ];
+  // Tall screens: the tree sits above the text.
+  const portrait: StarSpec[] = [
+    { x: 0.5, y: 0.075, r: 0.105 },
+    { x: 0.2, y: 0.175, r: 0.06 },
+    { x: 0.52, y: 0.195, r: 0.06 },
+    { x: 0.83, y: 0.165, r: 0.06 },
+    { x: 0.09, y: 0.285, r: 0.036 },
+    { x: 0.26, y: 0.31, r: 0.036 },
+    { x: 0.43, y: 0.29, r: 0.036 },
+    { x: 0.59, y: 0.315, r: 0.036 },
+    { x: 0.75, y: 0.29, r: 0.036 },
+    { x: 0.91, y: 0.27, r: 0.036 },
+  ];
+
+  const root = document.querySelector<HTMLElement>('[data-sky]');
+  const hero = root?.closest('section');
+  if (root && hero) {
+    const canvas = root.querySelector('canvas')!;
+    const svg = root.querySelector('svg')!;
+    const text = hero.querySelector<HTMLElement>('[data-calm]');
+    const button = hero.querySelector<HTMLButtonElement>('[data-join]');
+    const NS = 'http://www.w3.org/2000/svg';
+    const make = (name: string, attrs: Record<string, string | number>) => {
+      const el = document.createElementNS(NS, name);
+      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, String(v));
+      return el;
+    };
+
+    function layout(stars: PlacedStar[], w: number, h: number) {
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      const parts: SVGElement[] = [];
+      stars.forEach((s, i) => {
+        const p = stars[NODES[i].parent];
+        if (!p) return;
+        // A branch from the edge of the parent's halo to the edge of the child's, with a slight sag.
+        const dx = s.x - p.x;
+        const dy = s.y - p.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const x1 = p.x + (dx / d) * p.r * 1.35;
+        const y1 = p.y + (dy / d) * p.r * 1.35;
+        const x2 = s.x - (dx / d) * s.r * 1.45;
+        const y2 = s.y - (dy / d) * s.r * 1.45;
+        const mx = (x1 + x2) / 2 + (dy / d) * d * 0.06;
+        const my = (y1 + y2) / 2 - (dx / d) * d * 0.06;
+        parts.push(make('path', { class: 'sky__branch', d: `M${x1} ${y1}Q${mx} ${my} ${x2} ${y2}` }));
+      });
+      stars.forEach((s, i) => {
+        const label = make('text', { class: 'sky__keys', x: s.x, y: s.y + s.r * 1.5 + 13 });
+        // Tight labels on small screens, so six leaves fit side by side.
+        label.textContent = w < 700 ? `[${NODES[i].keys.replaceAll(' ', '')}]` : `[ ${NODES[i].keys} ]`;
+        parts.push(label);
+      });
+      stars.forEach((s) => {
+        parts.push(make('circle', { class: 'sky__hit', cx: s.x, cy: s.y, r: Math.max(22, s.r * 1.5) }));
+      });
+      svg.replaceChildren(...parts);
+    }
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const sky = mountSky(canvas, {
+      landscape,
+      portrait,
+      reduced,
+      onLayout: layout,
+      calmZone: () => {
+        if (!text) return null;
+        const a = canvas.getBoundingClientRect();
+        const b = text.getBoundingClientRect();
+        return {
+          left: b.left - a.left - 20,
+          top: b.top - a.top - 20,
+          right: b.right - a.left + 20,
+          bottom: b.bottom - a.top + 20,
+        };
+      },
+    });
+    root.classList.add('is-live');
+
+    // Hover joins the stars; a click, a tap or the button keeps them joined.
+    let pinned = false;
+    const join = (on: boolean) => hero.classList.toggle('is-joined', on);
+    const toggle = () => {
+      pinned = !pinned;
+      button?.setAttribute('aria-pressed', String(pinned));
+      join(pinned);
+    };
+    const onStar = (e: Event) => (e.target as Element).classList.contains('sky__hit');
+    svg.addEventListener('pointerover', (e) => onStar(e) && join(true));
+    svg.addEventListener('pointerout', (e) => onStar(e) && !pinned && join(false));
+    svg.addEventListener('click', (e) => onStar(e) && toggle());
+    button?.addEventListener('click', toggle);
+
+    // Paint only while the sky is on screen and the tab is visible.
+    let visible = true;
+    const sync = () => (visible && !document.hidden ? sky.start() : sky.stop());
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    }).observe(root);
+    document.addEventListener('visibilitychange', sync);
+
+    let timer = 0;
+    let width = root.clientWidth;
+    let height = root.clientHeight;
+    new ResizeObserver(() => {
+      // Phones resize the viewport when the address bar hides. Ignore height-only changes that small.
+      if (root.clientWidth === width && Math.abs(root.clientHeight - height) < 120) return;
+      width = root.clientWidth;
+      height = root.clientHeight;
+      clearTimeout(timer);
+      timer = window.setTimeout(() => sky.resize(), 150);
+    }).observe(root);
+    // The text block moves when the fonts arrive, and the sky must keep clear of it.
+    document.fonts.ready.then(() => sky.resize());
+  }
+</script>
+
+<style is:global>
+  .sky {
+    position: absolute;
+    inset: 0;
+  }
+  .sky__canvas,
+  .sky__tree {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .sky__canvas {
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .sky.is-live .sky__canvas {
+    opacity: 1;
+  }
+  .sky__tree {
+    pointer-events: none;
+  }
+  .sky__hit {
+    fill: transparent;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .sky__branch {
+    fill: none;
+    stroke: #f7dc7a;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-dasharray: 9 8;
+  }
+  .sky__keys {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    text-anchor: middle;
+    fill: var(--canvas);
+    stroke: var(--night);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+    paint-order: stroke;
+  }
+  .sky__branch,
+  .sky__keys {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+  .is-joined .sky__branch,
+  .is-joined .sky__keys {
+    opacity: 1;
+  }
+</style>

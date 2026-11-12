@@ -1,0 +1,261 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--canvas);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 1;
+  font-weight: 620;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  color: var(--heading);
+  margin: 0 0 0.5em;
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--step-4);
+  font-weight: 700;
+}
+h2 {
+  font-size: var(--step-3);
+}
+h3 {
+  font-size: var(--step-1);
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+p {
+  margin: 0 0 1em;
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.4;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+code,
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  font-variant-ligatures: none;
+}
+
+/* Links: a brushed underline, not a ruled one. */
+a {
+  color: var(--link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.11em;
+  text-underline-offset: 0.2em;
+  text-decoration-skip-ink: none;
+}
+a:hover {
+  text-decoration-style: wavy;
+  text-decoration-thickness: 0.09em;
+}
+
+/* Focus: chrome ring with a dark gap, so it shows on every surface. */
+:focus-visible {
+  outline: 3px solid var(--chrome);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--ring-gap, var(--night));
+  border-radius: 3px;
+}
+
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 10;
+  padding: 0.5rem 0.9rem;
+  background: var(--chrome);
+  color: var(--night);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
+.skip:focus {
+  top: 1rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- painted pieces ---------- */
+
+/* .paint puts colour on a layer behind the content and roughens only that
+   layer, so edges look brushed and the text on top stays sharp. */
+.paint {
+  position: relative;
+  isolation: isolate;
+}
+.paint::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--paint, var(--chrome));
+  filter: url(#rough);
+}
+.paint--impasto::before {
+  filter: url(#impasto);
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.62em 1.35em 0.7em;
+  font-family: var(--font-display);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 1;
+  font-weight: 640;
+  font-size: var(--step-0);
+  line-height: 1.1;
+  color: var(--night);
+  text-decoration: none;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  rotate: -0.6deg;
+}
+.btn::before {
+  inset: -2px -4px;
+  border-radius: 0.5em 0.9em 0.6em 0.8em / 0.9em 0.5em 0.8em 0.6em;
+}
+/* A second, darker stroke under the first: the brush went over it twice. */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 5px -8px -6px 3px;
+  z-index: -2;
+  background: var(--paint-under, var(--ochre));
+  border-radius: 0.8em 0.5em 0.9em 0.6em / 0.5em 0.9em 0.6em 0.8em;
+  filter: url(#rough);
+}
+.btn:hover {
+  --paint: #f7d766;
+  text-decoration: none;
+}
+.btn--quiet {
+  --paint: var(--canvas);
+  --paint-under: var(--sky);
+}
+.btn--quiet:hover {
+  --paint: #fbf4df;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.18em 0.8em 0.26em;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  color: var(--night);
+  --paint: var(--blossom);
+}
+.tag::before {
+  inset: 0 -3px;
+  border-radius: 1em 0.5em 0.9em 0.6em / 0.6em 1em 0.5em 0.9em;
+}
+.tag:nth-child(3n + 1) {
+  rotate: -1.2deg;
+}
+.tag:nth-child(3n + 2) {
+  rotate: 0.9deg;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 0.9rem;
+  padding: 0;
+  margin: 0 0 1.2em;
+  list-style: none;
+}
+
+/* ---------- layout helpers ---------- */
+
+.wrap {
+  position: relative;
+  width: min(100% - 2 * var(--gutter), 72rem);
+  margin-inline: auto;
+}
+
+.stack > * + * {
+  margin-top: 1.1em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- brass plates under frames ---------- */
+
+.plate-title {
+  display: block;
+  font-family: var(--font-display);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 1;
+  font-size: var(--step-1);
+  font-weight: 640;
+  line-height: 1.1;
+  color: var(--night);
+}
+.plate-blurb {
+  display: block;
+  max-width: 30ch;
+  margin: 0.35rem auto 0.3rem;
+  font-size: var(--step--1);
+  line-height: 1.35;
+}
+.plate-stats {
+  display: block;
+  font-size: 0.72em;
+  color: var(--night);
+}

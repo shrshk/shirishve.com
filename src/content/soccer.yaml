@@ -1,0 +1,18 @@
+# Soccer section copy. No crest, wordmark, kit or sponsor logos: words and colour only.
+
+club: Arsenal
+line: 'North London, by way of North Texas'
+
+# PLACEHOLDER: captions and photos are not approved yet.
+postcards:
+  - title: France v Spain
+    caption: 'PLACEHOLDER: World Cup 2026 semifinal.'
+    photo: ''
+  - title: Round of 16 at AT&T Stadium
+    caption: 'PLACEHOLDER: World Cup 2026, a night in Arlington.'
+    photo: ''
+
+# PLACEHOLDER: Guess the Pass has no public URL yet.
+guessThePass:
+  url: ''
+  line: 'PLACEHOLDER: A game about where the next pass goes.'

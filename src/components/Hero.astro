@@ -1,0 +1,180 @@
+---
+// Section 1: starry night over the North Texas plains.
+import BrushField from './BrushField.astro';
+import BrushDivider from './BrushDivider.astro';
+import Plains from './Plains.astro';
+import Seal from './Seal.astro';
+import StarrySky from './StarrySky.astro';
+import VermilionStroke from './VermilionStroke.astro';
+import { show, site } from '../lib/content';
+
+const [first, ...rest] = site.name.split(' ');
+---
+
+<section class="hero surface--night" id="top" aria-label="Introduction">
+  <!-- Shown until the canvas paints, and when scripts are off. -->
+  <BrushField surface="night" seed={11} />
+  <StarrySky />
+  <Plains />
+  <BrushDivider to="canvas" seed={31} />
+  <div class="hero__grain" aria-hidden="true"></div>
+
+  <div class="wrap hero__content">
+    <div class="hero__text" data-calm>
+      <p class="hero__role mono">{site.role}</p>
+      <h1>
+        <span>{first}</span>
+        <span>{rest.join(' ')}</span>
+      </h1>
+      <VermilionStroke seed={4} width="clamp(7rem, 18vw, 12rem)" />
+      <p class="lede hero__tagline">{show(site.tagline)}</p>
+      <ul class="hero__seals">
+        {site.socials.map((s) => (
+          <li>
+            <Seal platform={s.platform} url={s.url} caption={false} />
+          </li>
+        ))}
+      </ul>
+    </div>
+    <button class="hero__join" type="button" data-join aria-pressed="false">
+      <svg viewBox="0 0 70 40" width="56" height="32" aria-hidden="true">
+        <path d="M4 32C20 38 48 34 64 10"></path>
+        <path d="M66 23.5L64.4 9.4 51 14"></path>
+      </svg>
+      <span class="hero__join-off">join the stars</span>
+      <span class="hero__join-on">a B-tree. order 3.</span>
+    </button>
+  </div>
+
+  <a class="hero__cue" href="#about">
+    <span>the day starts below</span>
+    <svg viewBox="0 0 24 34" width="20" height="28" aria-hidden="true">
+      <path d="M12 3C10 12 14 20 12 30M4 22 12 31 20 21"></path>
+    </svg>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: max(100svh, 38rem);
+    padding-block: 5rem clamp(10rem, 22vw, 15rem);
+    overflow: hidden;
+    background: var(--night);
+    color: var(--text);
+  }
+  .hero__grain {
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    background-size: 256px 256px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* The text sits over the sky. Only the pieces take the pointer, so the stars beside them still can. */
+  .hero__content {
+    pointer-events: none;
+  }
+  .hero__content > * {
+    pointer-events: auto;
+  }
+  .hero__text {
+    width: fit-content;
+    max-width: min(36rem, 42vw);
+  }
+  .hero__role {
+    margin-bottom: 1.1rem;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+  .hero h1 {
+    margin-bottom: 0.2em;
+    font-size: clamp(2.7rem, 5.8vw, 5.6rem);
+  }
+  .hero h1 span {
+    display: block;
+  }
+  .hero__tagline {
+    margin-top: 1.5rem;
+    max-width: 26ch;
+  }
+  .hero__seals {
+    display: flex;
+    gap: 1.2rem;
+    padding: 0;
+    margin: 1.6rem 0 0;
+    list-style: none;
+  }
+
+  /* A margin note that is also a button. */
+  .hero__join {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+    padding: 0.3rem 0.5rem;
+    border: 0;
+    background: none;
+    font-family: var(--font-hand);
+    font-size: clamp(1.4rem, 1.25rem + 0.7vw, 1.8rem);
+    line-height: 1;
+    color: var(--text);
+    cursor: pointer;
+    rotate: -3deg;
+  }
+  .hero__join path,
+  .hero__cue path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .hero__join:hover span {
+    text-decoration: underline wavy;
+    text-decoration-thickness: 1px;
+  }
+  .hero__join-on,
+  .hero__join[aria-pressed='true'] .hero__join-off {
+    display: none;
+  }
+  .hero__join[aria-pressed='true'] .hero__join-on {
+    display: inline;
+  }
+
+  .hero__cue {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(5.5rem, 13vw, 9.5rem);
+    translate: -50% 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-hand);
+    font-size: 1.35rem;
+    line-height: 1.1;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  /* Tall screens: stars above, words below. Matches the layout switch in lib/sky.ts. */
+  @media (max-aspect-ratio: 4 / 5) {
+    .hero {
+      align-items: flex-end;
+      padding-top: 47svh;
+      padding-bottom: clamp(11rem, 44vw, 15rem);
+    }
+    .hero__text {
+      max-width: 100%;
+    }
+    .hero h1 {
+      font-size: clamp(2.7rem, 13vw, 4.4rem);
+    }
+    .hero__join svg {
+      scale: 1 -1;
+    }
+  }
+</style>

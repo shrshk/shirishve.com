@@ -1,0 +1,83 @@
+---
+// Shared SVG filters. Referenced from CSS as url(#rough), url(#rough-fine), url(#impasto).
+// rough:      pushes edges around so shapes look brushed, not ruled.
+// rough-fine: the same, for small shapes.
+// impasto:    rough edges plus lit ridges along the stroke, like thick paint.
+---
+
+<svg class="paint-filters" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="rough" x="-10%" y="-30%" width="120%" height="160%">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.04"
+        numOctaves="2"
+        seed="3"
+        result="warp"
+      ></feTurbulence>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="warp"
+        scale="7"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      ></feDisplacementMap>
+    </filter>
+    <filter id="rough-fine" x="-10%" y="-30%" width="120%" height="160%">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.09"
+        numOctaves="2"
+        seed="8"
+        result="warp"
+      ></feTurbulence>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="warp"
+        scale="4"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      ></feDisplacementMap>
+    </filter>
+    <filter id="impasto" x="-10%" y="-20%" width="120%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.035"
+        numOctaves="2"
+        seed="4"
+        result="warp"
+      ></feTurbulence>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="warp"
+        scale="7"
+        xChannelSelector="R"
+        yChannelSelector="G"
+        result="shape"
+      ></feDisplacementMap>
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.018 0.2"
+        numOctaves="3"
+        seed="11"
+        result="ridges"
+      ></feTurbulence>
+      <feDiffuseLighting
+        in="ridges"
+        surfaceScale="2.4"
+        diffuseConstant="1.12"
+        lighting-color="#ffffff"
+        result="light"
+      >
+        <feDistantLight azimuth="235" elevation="60"></feDistantLight>
+      </feDiffuseLighting>
+      <feComposite in="light" in2="shape" operator="arithmetic" k1="1" k2="0" k3="0" k4="0"></feComposite>
+    </filter>
+  </defs>
+</svg>
+
+<style>
+  .paint-filters {
+    position: absolute;
+  }
+</style>

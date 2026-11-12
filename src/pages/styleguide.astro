@@ -1,0 +1,637 @@
+---
+import Base from '../layouts/Base.astro';
+import Surface from '../components/Surface.astro';
+import BrushDivider from '../components/BrushDivider.astro';
+import BrushField from '../components/BrushField.astro';
+import Frame from '../components/Frame.astro';
+import Seal from '../components/Seal.astro';
+import MarginNote from '../components/MarginNote.astro';
+import Signature from '../components/Signature.astro';
+import VermilionStroke from '../components/VermilionStroke.astro';
+import StarHalo from '../components/StarHalo.astro';
+import { blob, wobble } from '../lib/brush';
+import { site } from '../lib/content';
+import { contrastReport, palette, roles, type Token } from '../lib/palette';
+
+const tokens = Object.keys(palette) as Token[];
+const report = contrastReport();
+const rule = `url("data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="12" viewBox="0 0 220 12"><path d="${wobble(5, 220, 2.2)}" fill="none" stroke="#101B3B" stroke-opacity=".45" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+)}")`;
+
+const scale = [
+  { step: '--step-4', use: 'Name, page title' },
+  { step: '--step-3', use: 'Section heading' },
+  { step: '--step-2', use: 'Pull line' },
+  { step: '--step-1', use: 'Lede, card title' },
+  { step: '--step-0', use: 'Body' },
+  { step: '--step--1', use: 'Stats, tags, captions' },
+];
+
+// Small canvases for the frames. Phase 4 swaps these for one painting per repo.
+const nightSky = [
+  { color: '#0A1230', opacity: 0.8, weight: 2 },
+  { color: palette.cobalt, opacity: 0.85, weight: 4 },
+  { color: palette.sky, opacity: 0.7, weight: 2 },
+  { color: palette.blossom, opacity: 0.5, weight: 1 },
+];
+const wheatfield = [
+  { color: palette.ochre, opacity: 0.85, weight: 3 },
+  { color: palette.chrome, opacity: 0.9, weight: 4 },
+  { color: '#F8E08A', opacity: 0.8, weight: 2 },
+  { color: palette.cypress, opacity: 0.55, weight: 1 },
+];
+const sunflowers = [
+  { color: palette.chrome, opacity: 0.9, weight: 4 },
+  { color: palette.ochre, opacity: 0.85, weight: 3 },
+  { color: '#8A5A10', opacity: 0.7, weight: 1 },
+  { color: palette.blossom, opacity: 0.75, weight: 2 },
+];
+---
+
+<Base
+  title="Styleguide"
+  description="The palette, type and brushwork of shirishve.com. Nothing on the page is an image."
+  noindex
+>
+  <!-- 1. Night -->
+  <Surface name="night" seed={11} label="Introduction">
+    <div class="wrap intro">
+      <div class="intro__stars" aria-hidden="true">
+        <StarHalo seed={3} size="clamp(6rem, 17vw, 12rem)" rings={5} />
+        <StarHalo seed={9} size="clamp(3.4rem, 8vw, 5.5rem)" rings={3} />
+        <StarHalo seed={21} size="clamp(2.6rem, 6vw, 4rem)" rings={3} />
+      </div>
+      <p class="eyebrow mono">shirishve.com / styleguide</p>
+      <h1>The paint box</h1>
+      <VermilionStroke seed={4} width="clamp(8rem, 24vw, 15rem)" />
+      <p class="lede intro__lede">
+        Every colour, letter and brush mark the site is allowed to use. Nothing on this page is an image: the
+        strokes are drawn in code when the site is built.
+      </p>
+      <div class="intro__note">
+        <MarginNote rotate={-3} arrow="up-left">
+          these stars hold still. the sky starts moving in phase 2.
+        </MarginNote>
+      </div>
+      <Signature seed={2} />
+    </div>
+    <BrushDivider slot="divider" to="canvas" seed={31} />
+  </Surface>
+
+  <!-- 2. Canvas: palette and contrast -->
+  <Surface name="canvas" seed={23} id="palette">
+    <div class="wrap">
+      <h2>Palette</h2>
+      <p>
+        Complementary blue and yellow carry the page. Vermilion is the Arsenal accent and appears once per
+        section, as a single stroke.
+      </p>
+      <ul class="daubs">
+        {tokens.map((t, i) => (
+          <li class="daub">
+            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+              <path d={blob(40 + i * 7, 27, 32, 33, 8, 0.17)} fill={palette[t]} />
+            </svg>
+            <div>
+              <strong class="mono">{t}</strong>
+              <span class="mono muted">{palette[t]}</span>
+              <span class="daub__role">{roles[t]}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="ledger-head">
+        <h3>Contrast ledger</h3>
+        <MarginNote rotate={2} arrow="left">
+          sky blue lost its job as text. it failed on night.
+        </MarginNote>
+      </div>
+      <p>
+        Each text colour is measured against the hardest paint it can land on: its ground, and two overlapping
+        strokes of every stroke colour. The build fails under 4.5 to 1.
+      </p>
+      <table class="ledger" style={`--rule:${rule}`}>
+        <thead>
+          <tr>
+            <th scope="col">Sample</th>
+            <th scope="col">Surface</th>
+            <th scope="col">Text</th>
+            <th scope="col" class="num">
+              Ratio
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {report.map((r) => (
+            <tr>
+              <td>
+                <span class="chip" style={`color:${r.fg};background:${r.worstBg}`}>
+                  Aa
+                </span>
+              </td>
+              <td>{r.surface}</td>
+              <td>{r.role}</td>
+              <td class="num mono">
+                {r.ratio.toFixed(1)}
+                <span class="visually-hidden">{r.pass ? 'passes AA' : 'fails AA'}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <Signature seed={5} />
+    </div>
+    <BrushDivider slot="divider" to="wheat" seed={47} />
+  </Surface>
+
+  <!-- 3. Wheat: type -->
+  <Surface name="wheat" seed={37} id="type">
+    <div class="wrap">
+      <h2>Type</h2>
+      <div class="specimens">
+        <div class="specimen">
+          <p class="specimen__label mono">Display · Fraunces, soft and wonky</p>
+          <p class="specimen__display">Night to day</p>
+        </div>
+        <div class="specimen">
+          <p class="specimen__label mono">Body · Newsreader</p>
+          <p>
+            A warm serif that holds on a textured ground. It sets the bio, the work notes and anything longer
+            than a line. <em>The italic is for titles and the odd aside.</em>{' '}
+            <a href="#type">Links are underlined</a> and turn wavy under the pointer.
+          </p>
+        </div>
+        <div class="specimen">
+          <p class="specimen__label mono">Margin notes · Caveat</p>
+          <MarginNote rotate={-1.5}>{site.work.explainNote}</MarginNote>
+        </div>
+        <div class="specimen">
+          <p class="specimen__label mono">Code and repo stats · JetBrains Mono</p>
+          <p class="mono specimen__mono">language · stars · last push</p>
+          <VermilionStroke seed={12} width="6rem" />
+        </div>
+      </div>
+
+      <h3>Scale</h3>
+      <ul class="scale">
+        {scale.map((s) => (
+          <li>
+            <span class="scale__sample" style={`font-size:var(${s.step})`}>
+              Aa
+            </span>
+            <span class="mono">{s.step}</span>
+            <span>{s.use}</span>
+          </li>
+        ))}
+      </ul>
+      <Signature seed={8} />
+    </div>
+    <BrushDivider slot="divider" to="cypress" seed={59} />
+  </Surface>
+
+  <!-- 4. Cypress: brushwork -->
+  <Surface name="cypress" seed={53} id="brushwork">
+    <div class="wrap">
+      <h2>Brushwork</h2>
+      <p>
+        Colour sits on a layer behind the words, and only that layer is roughened. Edges look brushed. The
+        text stays sharp.
+      </p>
+      <div class="pieces">
+        <div class="piece">
+          <h3>Buttons</h3>
+          <div class="piece__row">
+            <a class="btn paint" href="#brushwork">
+              See the work
+            </a>
+            <a class="btn btn--quiet paint" href="#brushwork">
+              Read the plan
+            </a>
+          </div>
+        </div>
+        <div class="piece">
+          <h3>Tags</h3>
+          <ul class="tags">
+            {site.work.focus.map((f) => (
+              <li class="tag paint">{f}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="piece">
+          <h3>The vermilion thread</h3>
+          <VermilionStroke seed={17} width="13rem" />
+          <p class="muted">One red stroke per section. No more until the Soccer section.</p>
+        </div>
+        <div class="piece">
+          <h3>Margin notes</h3>
+          <div class="piece__row piece__row--notes">
+            <MarginNote rotate={-3} arrow="left">
+              measured, not guessed.
+            </MarginNote>
+            <MarginNote rotate={2} arrow="right">
+              no exclamation marks. ever.
+            </MarginNote>
+          </div>
+        </div>
+        <div class="piece">
+          <h3>Dividers</h3>
+          <p class="muted">
+            Sections meet along a ragged edge: the next colour is dragged up into this one. There is one above
+            and one below.
+          </p>
+        </div>
+        <div class="piece">
+          <h3>Signature</h3>
+          <p class="muted">Each section is signed in a lower corner, the way a canvas is.</p>
+        </div>
+      </div>
+      <Signature seed={13} />
+    </div>
+    <BrushDivider slot="divider" to="wall" seed={71} />
+  </Surface>
+
+  <!-- 5. Wall: frames -->
+  <Surface name="wall" seed={67} id="frames">
+    <div class="wrap">
+      <h2>Frames</h2>
+      <p>
+        Projects hang on a wall in gilt frames, each a little crooked. The canvases below are stand-ins; each
+        repo gets its own painting in phase 4.
+      </p>
+      <div class="gallery">
+        <Frame tilt={-1.6} alt="A small night sky in swirling blue strokes with one haloed star">
+          <BrushField
+            seed={3}
+            fit
+            base={palette.night}
+            width={400}
+            height={300}
+            strokes={nightSky}
+            cell={17}
+            length={[26, 60]}
+            thickness={[7, 14]}
+            angle={-0.3}
+            swirl={2.2}
+          />
+          <div class="mini-star">
+            <StarHalo seed={5} size="38%" rings={4} />
+          </div>
+          <Fragment slot="plate">
+            <strong class="plate__title">Night study</strong>
+            <span class="mono plate__stats">language · stars · last push</span>
+          </Fragment>
+        </Frame>
+        <Frame tilt={1.1} ratio="1 / 1" alt="A wheat field in upright yellow and ochre strokes">
+          <BrushField
+            seed={8}
+            fit
+            base={palette.chrome}
+            width={320}
+            height={320}
+            strokes={wheatfield}
+            cell={17}
+            length={[30, 64]}
+            thickness={[6, 12]}
+            angle={-1.4}
+            swirl={0.5}
+          />
+          <Fragment slot="plate">
+            <strong class="plate__title">Wheat study</strong>
+            <span class="mono plate__stats">language · stars · last push</span>
+          </Fragment>
+        </Frame>
+        <Frame tilt={-0.7} alt="Yellow and ochre strokes turning like sunflower heads on a pale green ground">
+          <BrushField
+            seed={14}
+            fit
+            base={palette.blossom}
+            width={400}
+            height={300}
+            strokes={sunflowers}
+            cell={17}
+            length={[24, 56]}
+            thickness={[7, 15]}
+            angle={0.8}
+            swirl={3}
+          />
+          <Fragment slot="plate">
+            <strong class="plate__title">Sunflower study</strong>
+            <span class="mono plate__stats">language · stars · last push</span>
+          </Fragment>
+        </Frame>
+      </div>
+      <div class="gallery__note">
+        <MarginNote rotate={-2} arrow="up-left">
+          each one hangs a little crooked.
+        </MarginNote>
+      </div>
+      <Signature seed={19} />
+    </div>
+    <BrushDivider slot="divider" to="night" seed={83} />
+  </Surface>
+
+  <!-- 6. Night: seals -->
+  <Surface name="night" seed={79} id="seals">
+    <div class="wrap">
+      <h2>Seals</h2>
+      <p>
+        Social links are wax seals. The brand mark inside is the unmodified Simple Icons path. A platform that
+        Simple Icons does not carry gets a plain letter.
+      </p>
+      <ul class="seals">
+        {site.socials.map((s) => (
+          <li>
+            <Seal platform={s.platform} url={s.url} />
+          </li>
+        ))}
+        <li>
+          <Seal platform="linkedin" url="#seals" label="LinkedIn (sample)" tone="cobalt" letter="in" />
+        </li>
+        <li>
+          <Seal platform="x" url="#seals" label="X (sample)" tone="blossom" />
+        </li>
+        <li>
+          <Seal platform="instagram" url="#seals" label="Instagram (sample)" />
+        </li>
+        <li>
+          <Seal platform="youtube" url="#seals" label="YouTube (sample)" tone="cobalt" />
+        </li>
+        <li>
+          <Seal platform="email" url="#seals" label="Email (sample)" tone="blossom" letter="@" />
+        </li>
+      </ul>
+      <div class="closing">
+        <VermilionStroke seed={29} width="5rem" />
+        <p class="mono muted closing__line">
+          Motion is slow and continuous. With reduced motion on, everything appears finished and still.
+        </p>
+      </div>
+      <Signature seed={31} />
+    </div>
+  </Surface>
+</Base>
+
+<style>
+  .eyebrow {
+    margin-bottom: 1.4rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* intro */
+  .intro {
+    padding-top: clamp(1rem, 6vw, 5rem);
+  }
+  .intro h1 {
+    margin-bottom: 0.18em;
+  }
+  .intro__lede {
+    margin-top: 1.6rem;
+    max-width: 34ch;
+  }
+  .intro__stars {
+    position: absolute;
+    top: -1rem;
+    right: 0;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0.5rem 1.5rem;
+    align-items: end;
+    justify-items: end;
+  }
+  .intro__stars > :first-child {
+    grid-row: span 2;
+  }
+  .intro__note {
+    margin-top: 1.5rem;
+    padding-left: clamp(0rem, 10vw, 9rem);
+  }
+  @media (max-width: 40rem) {
+    .intro__stars {
+      position: static;
+      justify-content: end;
+      margin-bottom: 1rem;
+    }
+  }
+
+  /* palette */
+  .daubs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+    gap: 1.4rem 2rem;
+    padding: 0;
+    margin: 2.2rem 0 3.5rem;
+    list-style: none;
+  }
+  .daub {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .daub svg {
+    flex: none;
+    width: 5rem;
+    height: 5rem;
+    overflow: visible;
+    filter: url(#impasto);
+  }
+  .daub:nth-child(even) svg {
+    rotate: 70deg;
+  }
+  .daub div {
+    display: grid;
+    line-height: 1.3;
+  }
+  .daub strong {
+    font-size: 1.05em;
+  }
+  .daub__role {
+    font-size: var(--step--1);
+  }
+
+  /* ledger */
+  .ledger-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.5rem 2rem;
+    margin-bottom: 0.8rem;
+  }
+  .ledger-head h3 {
+    margin: 0;
+  }
+  .ledger {
+    width: min(100%, 44rem);
+    margin-top: 1.5rem;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+  }
+  .ledger th {
+    padding: 0 0.6rem 0.5rem 0;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.9em;
+    text-align: left;
+    text-transform: lowercase;
+  }
+  .ledger td {
+    padding: 0.45rem 0.6rem 0.75rem 0;
+    vertical-align: middle;
+  }
+  .ledger tr {
+    position: relative;
+  }
+  /* One hand-drawn rule per row, drawn across the whole row so it does not break at each cell. */
+  .ledger td:first-child::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 12px;
+    background: var(--rule) repeat-x left bottom / 220px 12px;
+  }
+  .ledger .num {
+    text-align: right;
+    padding-right: 0;
+  }
+  .chip {
+    display: inline-block;
+    padding: 0.05em 0.55em 0.12em;
+    font-family: var(--font-body);
+    font-size: 1.25em;
+    font-weight: 500;
+    border-radius: 0.5em 0.9em 0.6em 0.8em / 0.9em 0.5em 0.8em 0.6em;
+  }
+
+  /* type */
+  .specimens {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 2.4rem 3.5rem;
+    margin: 2rem 0 3.2rem;
+  }
+  .specimen__label {
+    margin-bottom: 0.5rem;
+    color: var(--muted);
+  }
+  .specimen__display {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+    font-size: var(--step-4);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+  .specimen__mono {
+    margin-bottom: 0.7rem;
+    font-size: var(--step-0);
+  }
+  .scale {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0;
+    margin: 1rem 0 0;
+    list-style: none;
+  }
+  .scale li {
+    display: grid;
+    grid-template-columns: minmax(4rem, 8.5rem) 6.5rem 1fr;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .scale__sample {
+    font-family: var(--font-display);
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+    font-weight: 650;
+    line-height: 1;
+  }
+  @media (max-width: 30rem) {
+    .scale li {
+      grid-template-columns: 6.5rem 1fr;
+    }
+    .scale li > :last-child {
+      grid-column: 2;
+      margin-top: -0.4rem;
+    }
+  }
+
+  /* brushwork */
+  .pieces {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    gap: 2.8rem 3.5rem;
+    margin-top: 2.5rem;
+  }
+  .piece h3 {
+    margin-bottom: 1.1rem;
+  }
+  .piece__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem 2rem;
+    align-items: center;
+  }
+  .piece__row--notes {
+    align-items: flex-start;
+    gap: 1.2rem 2.5rem;
+  }
+  .piece :global(.vermilion-stroke) {
+    margin-bottom: 1rem;
+  }
+
+  /* frames */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr));
+    align-items: start;
+    gap: 3rem clamp(2rem, 5vw, 4.5rem);
+    margin-top: 2.5rem;
+    padding-inline: clamp(0.4rem, 2vw, 1.5rem);
+  }
+  .gallery > :nth-child(2) {
+    margin-top: clamp(0rem, 4vw, 3.5rem);
+  }
+  .gallery :global(.plate__title) {
+    display: block;
+    font-family: var(--font-display);
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+    font-size: var(--step-1);
+    line-height: 1.1;
+  }
+  .gallery :global(.plate__stats) {
+    font-size: 0.72em;
+  }
+  .mini-star {
+    position: absolute;
+    inset: 12% auto auto 54%;
+    width: 100%;
+  }
+  .gallery__note {
+    margin-top: 2rem;
+    padding-left: clamp(1rem, 12vw, 12rem);
+  }
+
+  /* seals */
+  .seals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem 2.2rem;
+    padding: 0;
+    margin: 2.2rem 0 3rem;
+    list-style: none;
+  }
+  .closing__line {
+    margin-top: 0.9rem;
+    max-width: 46ch;
+  }
+</style>
