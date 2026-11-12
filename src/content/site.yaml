@@ -36,16 +36,6 @@ resume:
 
 analytics: none # PLACEHOLDER: none, or a privacy-friendly option
 
-career:
-  # PLACEHOLDER: years and one line each; only what is cleared to say.
-  - org: Deloitte
-  - org: Capgemini
-  - org: DealerSocket
-  - org: Goldman Sachs
-  - org: MG Stover
-education:
-  - 'M.S., University of Texas at Arlington'
-
 work:
   # PLACEHOLDER: needs clearance for what can be said about Otto and MG Stover.
   # Kept general on purpose: no product name and no team size until that is cleared.

@@ -1,0 +1,81 @@
+---
+// The sun behind the portrait: a disc, dashed halos that turn slowly, and short rays.
+// Nothing here is filtered, so the slow turn stays smooth.
+import { rng } from '../lib/brush';
+
+interface Props {
+  seed?: number;
+}
+const { seed = 1 } = Astro.props;
+const rand = rng(seed);
+const colours = ['#F2C230', '#E8A13A', '#C98A1B', '#D9631E'];
+const halos = Array.from({ length: 7 }, (_, i) => {
+  const dash = 10 + rand() * 16;
+  return {
+    r: 172 + i * 16 + rand() * 4,
+    width: 10 - i * 0.6,
+    dash: `${dash.toFixed(1)} ${(dash * (0.45 + rand() * 0.5)).toFixed(1)}`,
+    colour: colours[i % colours.length],
+    opacity: (1 - i * 0.07).toFixed(2),
+    seconds: 80 + i * 22,
+    back: i % 2 === 1,
+  };
+});
+let rays = '';
+for (let i = 0; i < 34; i++) {
+  const a = (i / 34) * Math.PI * 2 + (rand() - 0.5) * 0.1;
+  const from = 284 + rand() * 10;
+  const to = from + 14 + rand() * 26;
+  rays += `M${(Math.cos(a) * from).toFixed(1)} ${(Math.sin(a) * from).toFixed(1)}L${(Math.cos(a) * to).toFixed(1)} ${(Math.sin(a) * to).toFixed(1)}`;
+}
+---
+
+<svg class="sun" viewBox="-330 -330 660 660" aria-hidden="true" focusable="false">
+  <circle r="166" fill="#F6D766" fill-opacity="0.55"></circle>
+  {halos.map((h) => (
+    <circle
+      class:list={['sun__halo', { 'sun__halo--back': h.back }]}
+      r={h.r}
+      fill="none"
+      stroke={h.colour}
+      stroke-width={h.width}
+      stroke-dasharray={h.dash}
+      stroke-opacity={h.opacity}
+      stroke-linecap="round"
+      style={`animation-duration:${h.seconds}s`}
+    />
+  ))}
+  <path class="sun__rays" d={rays}></path>
+</svg>
+
+<style>
+  .sun {
+    display: block;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .sun__halo {
+    transform-origin: 0 0;
+    animation: sun-turn linear infinite;
+  }
+  .sun__halo--back {
+    animation-direction: reverse;
+  }
+  .sun__rays {
+    fill: none;
+    stroke: #c98a1b;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-opacity: 0.7;
+  }
+  @keyframes sun-turn {
+    to {
+      rotate: 360deg;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sun__halo {
+      animation: none;
+    }
+  }
+</style>

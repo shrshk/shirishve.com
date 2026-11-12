@@ -1,37 +1,40 @@
 ---
-// Section 2: a sunlit room. Dawn.
+// Section 2: a sunlit room. Dawn. The sun comes up behind the portrait.
 import BrushDivider from './BrushDivider.astro';
 import Frame from './Frame.astro';
 import MarginNote from './MarginNote.astro';
 import Signature from './Signature.astro';
+import Sun from './Sun.astro';
+import Sunflowers from './Sunflowers.astro';
 import Surface from './Surface.astro';
 import VermilionStroke from './VermilionStroke.astro';
 import { show, site } from '../lib/content';
+const [first, ...rest] = site.bio;
 ---
 
 <Surface name="canvas" seed={23} id="about">
   <div class="wrap about">
     <div class="about__words">
       <h2>About</h2>
-      {site.bio.map((p) => (
-        <p>{show(p)}</p>
+      <VermilionStroke seed={7} width="7rem" />
+      {first && (
+        <p class="about__big">
+          <span>{show(first)}</span>
+        </p>
+      )}
+      {rest.map((p) => (
+        <p class="about__more">{show(p)}</p>
       ))}
-
-      <h3>The road here</h3>
-      <ol class="road">
-        {site.career.map((c) => (
-          <li>
-            <strong>{c.org}</strong>
-            {c.years && <span class="mono muted">{c.years}</span>}
-            {c.line && <span>{show(c.line)}</span>}
-          </li>
-        ))}
-      </ol>
-      <VermilionStroke seed={7} width="5rem" />
-      <p class="about__school">{site.education.join(' · ')}</p>
+      <p class="about__place tag paint">{site.location}</p>
+      <div class="about__flowers">
+        <Sunflowers seed={31} />
+      </div>
     </div>
 
     <div class="about__portrait">
+      <div class="about__sun">
+        <Sun seed={19} />
+      </div>
       <Frame tilt={1.4} ratio="4 / 5">
         <img
           class="about__photo"
@@ -63,37 +66,50 @@ import { show, site } from '../lib/content';
     display: grid;
     grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
     gap: 3rem clamp(2rem, 6vw, 6rem);
-    align-items: start;
+    align-items: center;
   }
-  .about h3 {
-    margin-top: 2.2rem;
+  .about__words {
+    position: relative;
+    z-index: 1;
   }
-  .road {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0;
-    padding: 0;
-    margin: 0 0 1.6rem;
-    list-style: none;
+  .about h2 {
+    font-size: var(--step-4);
+    line-height: 0.95;
+    margin-bottom: 0.6rem;
   }
-  .road li {
-    display: grid;
+  .about__big {
+    max-width: 18ch;
+    margin: 2rem 0 1.4rem;
+    font-family: var(--font-display);
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+    font-size: var(--step-3);
+    font-weight: 700;
+    line-height: 1.12;
   }
-  .road li:not(:last-child) {
-    padding-right: 2.6rem;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 14'%3E%3Cpath d='M2 8C8 5 16 9 26 7M20 2 27 7 20 12' fill='none' stroke='%23101B3B' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-      no-repeat right 0.6rem top 0.45em / 1.6rem auto;
+  /* A stroke of chrome yellow under every line of the sentence. */
+  .about__big span {
+    background: linear-gradient(transparent 58%, var(--chrome) 58% 92%, transparent 92%);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding-inline: 0.12em;
   }
-  .road li:last-child strong {
-    text-decoration: underline wavy var(--ochre);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.25em;
+  .about__more {
+    max-width: 34ch;
+    font-size: var(--step-1);
   }
-  .about__school {
-    margin-top: 0.9rem;
+  .about__place {
+    display: inline-block;
+    margin-top: 0.6rem;
+  }
+  .about__flowers {
+    width: min(100%, 26rem);
+    margin: 2.5rem 0 0;
   }
   .about__portrait {
-    max-width: 21rem;
+    position: relative;
+    max-width: 24rem;
     justify-self: center;
     width: 100%;
   }
@@ -102,6 +118,17 @@ import { show, site } from '../lib/content';
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .about__sun {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    width: 200%;
+    translate: -50% -50%;
+  }
+  .about__portrait :global(.frame),
+  .about__note {
+    position: relative;
   }
   .about__note {
     margin-top: 1.4rem;

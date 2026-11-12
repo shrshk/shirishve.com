@@ -1,0 +1,122 @@
+---
+// Three sunflowers, painted at build time: two rings of petals round a dark seed head.
+import { rng } from '../lib/brush';
+
+interface Props {
+  seed?: number;
+}
+const { seed = 1 } = Astro.props;
+const rand = rng(seed);
+const n = (v: number) => Math.round(v * 10) / 10;
+
+function petals(cx: number, cy: number, R: number, count: number, turn: number): string {
+  let d = '';
+  for (let i = 0; i < count; i++) {
+    const a = (i / count) * Math.PI * 2 + turn + (rand() - 0.5) * 0.16;
+    const half = (Math.PI / count) * 0.95;
+    const tip = R * (0.92 + rand() * 0.2);
+    const base = R * 0.4;
+    const belly = R * 0.74;
+    const p = (r: number, t: number) => `${n(cx + Math.cos(t) * r)} ${n(cy + Math.sin(t) * r)}`;
+    d += `M${p(base, a - half)}Q${p(belly, a - half * 1.25)} ${p(tip, a)}Q${p(belly, a + half * 1.25)} ${p(base, a + half)}Z`;
+  }
+  return d;
+}
+
+const heads = [
+  { x: 84, y: 104, r: 50, foot: 70 },
+  { x: 214, y: 70, r: 62, foot: 205 },
+  { x: 338, y: 118, r: 46, foot: 330 },
+].map((h) => ({
+  ...h,
+  back: petals(h.x, h.y, h.r, 15, 0.2),
+  front: petals(h.x, h.y, h.r * 0.86, 15, 0.2 + Math.PI / 15),
+  stem: `M${h.x} ${h.y + h.r * 0.3}Q${n(h.x + (rand() - 0.5) * 50)} ${n((h.y + 300) / 2)} ${h.foot} 300`,
+  leaf: `M${n((h.x + h.foot) / 2)} ${n(h.y + 110)}q${n(34 + rand() * 12)} -30 ${n(60 + rand() * 14)} -8q-22 26 -${n(60 + rand() * 10)} 8Z`,
+  flip: rand() < 0.5,
+}));
+const grass = heads
+  .flatMap((h) =>
+    Array.from({ length: 9 }, () => {
+      const x = h.foot + (rand() - 0.5) * 90;
+      return `M${n(x)} 302q${n((rand() - 0.5) * 16)} -${n(14 + rand() * 20)} ${n((rand() - 0.5) * 30)} -${n(30 + rand() * 34)}`;
+    }),
+  )
+  .join('');
+---
+
+<svg class="sunflowers" viewBox="0 0 420 300" aria-hidden="true" focusable="false">
+  {heads.map((h) => (
+    <g>
+      <path class="stem" d={h.stem} />
+      <path
+        class="leaf"
+        d={h.leaf}
+        transform={h.flip ? `translate(${(h.x + h.foot) * 1}, 0) scale(-1, 1)` : undefined}
+      />
+      <g class="head">
+        <path class="petal petal--back" d={h.back} />
+        <path class="petal petal--front" d={h.front} />
+        <circle class="seed" cx={h.x} cy={h.y} r={h.r * 0.4} />
+        <circle class="seed-ring" cx={h.x} cy={h.y} r={h.r * 0.27} />
+        <circle class="seed-ring seed-ring--in" cx={h.x} cy={h.y} r={h.r * 0.13} />
+      </g>
+    </g>
+  ))}
+  <path class="grass" d={grass} />
+</svg>
+
+<style>
+  .sunflowers {
+    display: block;
+    width: 100%;
+    overflow: visible;
+  }
+  .stem {
+    fill: none;
+    stroke: #2e6b3e;
+    stroke-width: 8;
+    stroke-linecap: round;
+  }
+  .grass {
+    fill: none;
+    stroke: #3f8650;
+    stroke-width: 5;
+    stroke-linecap: round;
+  }
+  .leaf {
+    fill: #3f8650;
+    stroke: #23402b;
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .head {
+    filter: url(#rough-fine);
+  }
+  .petal {
+    stroke: var(--gilt-dark);
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+  }
+  .petal--back {
+    fill: var(--ochre);
+  }
+  .petal--front {
+    fill: var(--chrome);
+  }
+  .seed {
+    fill: #5a330f;
+    stroke: var(--gilt-shade);
+    stroke-width: 3;
+  }
+  .seed-ring {
+    fill: none;
+    stroke: var(--ochre);
+    stroke-width: 3;
+    stroke-dasharray: 2 5;
+    stroke-linecap: round;
+  }
+  .seed-ring--in {
+    stroke: #c7702a;
+  }
+</style>

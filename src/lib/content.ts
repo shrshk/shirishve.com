@@ -22,8 +22,6 @@ const siteSchema = z.object({
   email: z.string(),
   resume: z.object({ enabled: z.boolean(), path: z.string() }),
   analytics: z.string(),
-  career: z.array(z.object({ org: z.string(), years: z.string().optional(), line: z.string().optional() })),
-  education: z.array(z.string()),
   work: z.object({
     summary: z.string(),
     focus: z.array(z.string()),
