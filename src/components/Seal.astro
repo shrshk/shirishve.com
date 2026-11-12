@@ -18,7 +18,13 @@ const { platform, url, tone = 'chrome', caption = true } = Astro.props;
 
 const key = 'si' + platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
 const icon = (icons as unknown as Record<string, { title: string; path: string } | undefined>)[key];
-const title = Astro.props.label ?? icon?.title ?? platform.charAt(0).toUpperCase() + platform.slice(1);
+// Names for platforms that Simple Icons does not carry.
+const names: Record<string, string> = { linkedin: 'LinkedIn' };
+const title =
+  Astro.props.label ??
+  icon?.title ??
+  names[platform.toLowerCase()] ??
+  platform.charAt(0).toUpperCase() + platform.slice(1);
 const letter = Astro.props.letter ?? platform.charAt(0).toUpperCase();
 
 // Seed from the name, so each seal keeps its own shape between builds.

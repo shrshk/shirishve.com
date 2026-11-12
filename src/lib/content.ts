@@ -25,6 +25,7 @@ const siteSchema = z.object({
   analytics: z.string(),
   work: z.object({
     summary: z.string(),
+    problems: z.array(z.object({ problem: z.string(), answer: z.string() })),
     scale: z.array(z.object({ figure: z.string(), label: z.string() })),
     focus: z.array(z.string()),
     explainNote: z.string(),

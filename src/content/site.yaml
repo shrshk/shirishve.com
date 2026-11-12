@@ -7,12 +7,13 @@ role: Engineering Manager and Staff Engineer
 url: https://shirishve.com
 
 # PLACEHOLDER: one sentence under the name.
-tagline: 'PLACEHOLDER: I lead a team and still read query plans.'
+tagline: 'PLACEHOLDER: Databases, distributed systems, and the occasional proof.'
 
-# PLACEHOLDER: short bio, first person, short sentences. The first line is set large.
+# PLACEHOLDER: the About section, written as a proposition and its proof.
+# The first line is set large. The rest follow the word "Proof."
 bio:
-  - 'PLACEHOLDER: I manage engineers and I still write code.'
-  - 'PLACEHOLDER: Computer science is the part I never stopped doing: data structures, query planners, and systems that stay correct when a worker dies halfway.'
+  - 'PLACEHOLDER: Find the invariant. The rest is arithmetic.'
+  - 'PLACEHOLDER: By construction: data structures, query planners, and systems that stay correct when a worker dies halfway.'
 
 # What the About section prints as a query result. Topic, then why.
 loves:
@@ -34,12 +35,17 @@ github: shrshk
 socials:
   - platform: github
     url: https://github.com/shrshk
-  # PLACEHOLDER: add LinkedIn, X, Instagram, YouTube URLs.
-  # - platform: linkedin
-  #   url: https://www.linkedin.com/in/PLACEHOLDER
+  - platform: linkedin
+    url: https://www.linkedin.com/in/shirish-veerabattini-91a506107/
+  - platform: x
+    url: https://twitter.com/shirish101k
+  - platform: medium
+    url: https://medium.com/@shirish101k
+  - platform: youtube
+    url: https://www.youtube.com/channel/UCI_vCc-18benG-PC68iyWrw
 
-# PLACEHOLDER: the address to show, or leave empty and use a form.
-email: ''
+# The address shown in the Contact letter. Empty hides it.
+email: shirish101k@gmail.com
 
 resume:
   enabled: false # PLACEHOLDER: yes or no
@@ -50,7 +56,17 @@ analytics: none # PLACEHOLDER: none, or a privacy-friendly option
 work:
   # PLACEHOLDER: not approved yet. No employer, product or client is named, and no team size.
   # The figures are from my own work on one production platform.
-  summary: 'PLACEHOLDER: I lead the engineering team behind a portfolio accounting platform for crypto and traditional assets. Every exchange, chain and custodian, reconciled to the last decimal.'
+  summary: 'PLACEHOLDER: I lead the engineering team behind a portfolio accounting platform for crypto and traditional assets. Most of what I solve there is scheduling: what runs next, on which worker, and what happens when that worker dies.'
+  # Scheduling problems, each with the answer I used.
+  problems:
+    - problem: 'Reshape a 3.6-billion-row table while it takes writes.'
+      answer: 'Write to both shapes. Backfill the oldest year first. Make every write an idempotent upsert. Move the reads last.'
+    - problem: 'Keep one long backfill from starving everything else.'
+      answer: 'Give it a queue of its own. Scale the workers on backlog per pod, not on queue length.'
+    - problem: 'Stop two workers doing the same job.'
+      answer: 'A lock that does not block. The second request records itself and leaves; the first one picks it up.'
+    - problem: 'Survive a worker that dies halfway.'
+      answer: 'Heartbeat leases and resumable chunks. The next worker starts from the last checkpoint.'
   # The scale, as figures. `figure` is set large; `label` explains it.
   scale:
     - figure: '3.6 B'

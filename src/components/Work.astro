@@ -13,6 +13,16 @@ import { show, site } from '../lib/content';
     <div>
       <h2>Work</h2>
       <p class="lede">{show(site.work.summary)}</p>
+      <h3>Scheduling problems I solve</h3>
+      <ol class="problems">
+        {site.work.problems.map((x) => (
+          <li>
+            <strong>{x.problem}</strong>
+            <span>{x.answer}</span>
+          </li>
+        ))}
+      </ol>
+      <h3>At what scale</h3>
       <ul class="scale">
         {site.work.scale.map((x) => (
           <li>
@@ -47,18 +57,46 @@ import { show, site } from '../lib/content';
     display: grid;
     grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
     gap: 2.5rem clamp(2rem, 6vw, 6rem);
-    align-items: center;
+    align-items: start;
   }
   .work h3 {
     margin-top: 2rem;
     margin-bottom: 1rem;
+  }
+  .problems {
+    display: grid;
+    gap: 1.1rem;
+    max-width: 44rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    counter-reset: problem;
+  }
+  .problems li {
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    column-gap: 0.4rem;
+    counter-increment: problem;
+  }
+  .problems li::before {
+    content: counter(problem) '.';
+    grid-row: span 2;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 800;
+    line-height: 1;
+  }
+  .problems strong {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    line-height: 1.2;
   }
   .scale {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
     gap: 1.6rem 2.2rem;
     padding: 0;
-    margin: 2.2rem 0 0;
+    margin: 0;
     list-style: none;
   }
   .scale li {

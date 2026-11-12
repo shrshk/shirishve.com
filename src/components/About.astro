@@ -18,12 +18,24 @@ const [first, ...rest] = site.bio;
       <h2>About</h2>
       <VermilionStroke seed={7} width="7rem" />
       {first && (
-        <p class="about__big">
-          <span>{show(first)}</span>
-        </p>
+        <>
+          <p class="about__label mono">Proposition.</p>
+          <p class="about__big">
+            <span>{show(first)}</span>
+          </p>
+        </>
       )}
-      {rest.map((p) => (
-        <p class="about__more">{show(p)}</p>
+      {rest.map((p, i) => (
+        <p class="about__more">
+          {i === 0 && <em class="about__proof">Proof. </em>}
+          {show(p)}
+          {i === rest.length - 1 && (
+            <span class="about__qed" title="Which was to be shown.">
+              {' '}
+              ∎
+            </span>
+          )}
+        </p>
       ))}
       <div class="about__query paint">
         <p class="mono about__sql">
@@ -100,9 +112,22 @@ const [first, ...rest] = site.bio;
     line-height: 0.95;
     margin-bottom: 0.6rem;
   }
+  .about__label {
+    margin: 2rem 0 0;
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .about__proof {
+    font-weight: 600;
+  }
+  .about__qed {
+    white-space: nowrap;
+  }
   .about__big {
     max-width: 18ch;
-    margin: 2rem 0 1.4rem;
+    margin: 0.5rem 0 1.4rem;
     font-family: var(--font-display);
     font-variation-settings:
       'SOFT' 100,
@@ -119,7 +144,7 @@ const [first, ...rest] = site.bio;
     padding-inline: 0.12em;
   }
   .about__more {
-    max-width: 34ch;
+    max-width: 36ch;
     font-size: var(--step-1);
   }
   /* A query result on a sheet of paper. */
