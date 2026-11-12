@@ -130,15 +130,26 @@ const cards = repos.map((r, i) => {
 <style>
   .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    /* One, two or four across: four frames never leave one alone on a row. */
+    grid-template-columns: 1fr;
     align-items: start;
-    gap: 3.2rem clamp(2rem, 5vw, 4.5rem);
+    gap: 3.2rem clamp(1.5rem, 3.5vw, 3.5rem);
     margin: 2.5rem 0 0;
     padding: 0 clamp(0.4rem, 2vw, 1.5rem);
     list-style: none;
   }
-  .gallery > :nth-child(3n + 2) {
-    margin-top: clamp(0rem, 4vw, 3rem);
+  @media (min-width: 36rem) {
+    .gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .gallery > :nth-child(even) {
+      margin-top: clamp(0rem, 4vw, 3rem);
+    }
+  }
+  @media (min-width: 68rem) {
+    .gallery {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
   .year {
     margin-top: clamp(4rem, 9vw, 7rem);

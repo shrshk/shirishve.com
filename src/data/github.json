@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-12T06:25:48.875Z",
+  "fetchedAt": "2026-11-12T12:36:38.470Z",
   "repos": [
     {
       "repo": "doodle-games",
@@ -12,49 +12,31 @@
       "pushedAt": "2026-11-04T18:55:59Z"
     },
     {
-      "repo": "ticker-watch-case-study",
-      "title": "Ticker Watch",
-      "blurb": "A live stock watchlist built to find where polling breaks and push earns its place.",
-      "url": "https://github.com/shrshk/ticker-watch-case-study",
-      "language": "Python",
-      "stars": 1,
-      "pushedAt": "2026-11-04T19:02:25Z"
-    },
-    {
-      "repo": "claude-code-inbox",
-      "title": "Claude Code Inbox",
-      "blurb": "Turn your Claude Code sessions into a swipeable inbox of action items, while they run",
-      "url": "https://github.com/shrshk/claude-code-inbox",
-      "language": "Python",
-      "stars": 0,
-      "pushedAt": "2026-10-13T16:59:34Z"
-    },
-    {
-      "repo": "recipes",
-      "title": "Highchair Chef",
-      "blurb": "Highchair Chef: step-by-step toddler recipes with an animated cook mode, pluggable recommendation skills, and an MCP server for custom recipes",
-      "url": "https://github.com/shrshk/recipes",
-      "language": "TypeScript",
-      "stars": 0,
-      "pushedAt": "2026-11-10T18:02:22Z"
-    },
-    {
-      "repo": "whatsapp-mcp",
-      "title": "WhatsApp MCP",
-      "blurb": "WhatsApp MCP server with scoped, deny-by-default per-chat access for AI assistants",
-      "url": "https://github.com/shrshk/whatsapp-mcp",
-      "language": "Python",
-      "stars": 0,
-      "pushedAt": "2026-10-22T21:35:32Z"
-    },
-    {
       "repo": "mimir-flix",
       "title": "mimir-flix",
-      "blurb": "A home media front end for Jellyfin on a Mac: your library, your streaming apps, live TV and the TV, from the phone",
+      "blurb": "A home media front end for Jellyfin: the library, streaming apps, live TV and the TV itself, from the phone.",
       "url": "https://github.com/shrshk/mimir-flix",
       "language": "Python",
       "stars": 1,
       "pushedAt": "2026-11-09T19:30:53Z"
+    },
+    {
+      "repo": "mimir-climate",
+      "title": "mimir-climate",
+      "blurb": "The home thermostats for an assistant: an MCP server that reads them and changes their schedules when asked.",
+      "url": "https://github.com/shrshk/mimir-climate",
+      "language": "Python",
+      "stars": 0,
+      "pushedAt": "2026-11-07T05:45:45Z"
+    },
+    {
+      "repo": "mimir-claw",
+      "title": "mimir-claw",
+      "blurb": "The home assistant setup: skills, MCP servers, privacy limits and automations, so a new Mac comes up from one repo.",
+      "url": "https://github.com/shrshk/mimir-claw",
+      "language": "Shell",
+      "stars": 0,
+      "pushedAt": "2026-11-09T22:41:27Z"
     }
   ],
   "days": [
