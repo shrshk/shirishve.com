@@ -66,7 +66,12 @@ const cards = repos.map((r, i) => {
     ratio: ['4 / 3', '1 / 1', '5 / 4'][Math.floor(rand() * 3)],
     angle: rand() * 6.28,
     swirl: 1.4 + rand() * 2,
-    stats: [r.language, `★ ${r.stars}`, `pushed ${ago(r.pushedAt, fetchedAt)}`].filter(Boolean).join(' · '),
+    stats: (r.private
+      ? [r.language, 'private repo']
+      : [r.language, `★ ${r.stars}`, `pushed ${ago(r.pushedAt, fetchedAt)}`]
+    )
+      .filter(Boolean)
+      .join(' · '),
   };
 });
 ---
@@ -97,9 +102,13 @@ const cards = repos.map((r, i) => {
               swirl={c.swirl}
             />
             <Fragment slot="plate">
-              <a class="plate-title" href={c.url}>
-                {c.title}
-              </a>
+              {c.url ? (
+                <a class="plate-title" href={c.url}>
+                  {c.title}
+                </a>
+              ) : (
+                <strong class="plate-title">{c.title}</strong>
+              )}
               <span class="plate-blurb">{c.blurb}</span>
               <span class="mono plate-stats">{c.stats}</span>
               {c.live && (
@@ -128,27 +137,24 @@ const cards = repos.map((r, i) => {
 </Surface>
 
 <style>
+  /* A centred wall: a short last row sits in the middle, not alone at the left. */
   .gallery {
-    display: grid;
-    /* One, two or four across: four frames never leave one alone on a row. */
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: 3.2rem clamp(1.5rem, 3.5vw, 3.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3.2rem clamp(1.5rem, 4vw, 4rem);
     margin: 2.5rem 0 0;
     padding: 0 clamp(0.4rem, 2vw, 1.5rem);
     list-style: none;
   }
+  .gallery > li {
+    flex: 0 1 17rem;
+    min-width: min(100%, 14rem);
+  }
   @media (min-width: 36rem) {
-    .gallery {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
     .gallery > :nth-child(even) {
       margin-top: clamp(0rem, 4vw, 3rem);
-    }
-  }
-  @media (min-width: 68rem) {
-    .gallery {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
   .year {

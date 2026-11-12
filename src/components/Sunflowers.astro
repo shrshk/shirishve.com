@@ -1,5 +1,6 @@
 ---
 // Three sunflowers, painted at build time: two rings of petals round a dark seed head.
+// The seeds sit as they do on the plant: each one turns 137.5 degrees from the last (the golden angle).
 import { rng } from '../lib/brush';
 
 interface Props {
@@ -23,6 +24,16 @@ function petals(cx: number, cy: number, R: number, count: number, turn: number):
   return d;
 }
 
+const GOLDEN = Math.PI * (3 - Math.sqrt(5));
+function seeds(cx: number, cy: number, R: number, count: number): string {
+  let d = '';
+  for (let k = 1; k <= count; k++) {
+    const r = R * Math.sqrt(k / count);
+    d += `M${n(cx + Math.cos(k * GOLDEN) * r)} ${n(cy + Math.sin(k * GOLDEN) * r)}h0.01`;
+  }
+  return d;
+}
+
 const heads = [
   { x: 84, y: 104, r: 50, foot: 70 },
   { x: 214, y: 70, r: 62, foot: 205 },
@@ -30,6 +41,7 @@ const heads = [
 ].map((h) => ({
   ...h,
   back: petals(h.x, h.y, h.r, 15, 0.2),
+  seeds: seeds(h.x, h.y, h.r * 0.34, 55),
   front: petals(h.x, h.y, h.r * 0.86, 15, 0.2 + Math.PI / 15),
   stem: `M${h.x} ${h.y + h.r * 0.3}Q${n(h.x + (rand() - 0.5) * 50)} ${n((h.y + 300) / 2)} ${h.foot} 300`,
   leaf: `M${n((h.x + h.foot) / 2)} ${n(h.y + 110)}q${n(34 + rand() * 12)} -30 ${n(60 + rand() * 14)} -8q-22 26 -${n(60 + rand() * 10)} 8Z`,
@@ -58,8 +70,7 @@ const grass = heads
         <path class="petal petal--back" d={h.back} />
         <path class="petal petal--front" d={h.front} />
         <circle class="seed" cx={h.x} cy={h.y} r={h.r * 0.4} />
-        <circle class="seed-ring" cx={h.x} cy={h.y} r={h.r * 0.27} />
-        <circle class="seed-ring seed-ring--in" cx={h.x} cy={h.y} r={h.r * 0.13} />
+        <path class="seeds" d={h.seeds} />
       </g>
     </g>
   ))}
@@ -109,14 +120,10 @@ const grass = heads
     stroke: var(--gilt-shade);
     stroke-width: 3;
   }
-  .seed-ring {
+  .seeds {
     fill: none;
-    stroke: var(--ochre);
-    stroke-width: 3;
-    stroke-dasharray: 2 5;
+    stroke: #e8a13a;
+    stroke-width: 2.6;
     stroke-linecap: round;
-  }
-  .seed-ring--in {
-    stroke: #c7702a;
   }
 </style>

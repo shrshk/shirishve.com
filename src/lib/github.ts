@@ -11,8 +11,10 @@ export interface Repo {
   repo: string;
   title: string;
   blurb: string;
-  /** The repo on GitHub. */
+  /** The repo on GitHub. Empty for a private repo. */
   url: string;
+  /** A repo that is not public: the card has no link and no GitHub figures. */
+  private?: boolean;
   /** A live site, when projects.yaml names one. A repo's own homepage field is not trusted: forks inherit it. */
   live?: string;
   language: string | null;
@@ -54,6 +56,20 @@ async function fetchRepos(): Promise<Repo[]> {
   };
   const repos: Repo[] = [];
   for (const p of projects) {
+    if (p.private) {
+      // Named by hand in projects.yaml. GitHub is not asked, so nothing private can leak in.
+      repos.push({
+        repo: p.repo,
+        title: p.title ?? p.repo,
+        blurb: p.blurb ?? '',
+        url: '',
+        private: true,
+        language: p.language ?? null,
+        stars: 0,
+        pushedAt: '',
+      });
+      continue;
+    }
     const owner = p.owner ?? site.github;
     const r = (await (await get(`https://api.github.com/repos/${owner}/${p.repo}`, headers)).json()) as {
       private: boolean;

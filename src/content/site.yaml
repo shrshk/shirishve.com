@@ -9,10 +9,21 @@ url: https://shirishve.com
 # PLACEHOLDER: one sentence under the name.
 tagline: 'PLACEHOLDER: I lead a team and still read query plans.'
 
-# PLACEHOLDER: short bio, first person, short sentences.
+# PLACEHOLDER: short bio, first person, short sentences. The first line is set large.
 bio:
   - 'PLACEHOLDER: I manage engineers and I still write code.'
-  - 'PLACEHOLDER: I like databases, distributed systems, and problems with a number at the end.'
+  - 'PLACEHOLDER: Computer science is the part I never stopped doing: data structures, query planners, and systems that stay correct when a worker dies halfway.'
+
+# What the About section prints as a query result. Topic, then why.
+loves:
+  - topic: databases
+    why: 'B-trees, MVCC, a plan that picks the right index'
+  - topic: distributed systems
+    why: 'queues, leases, backpressure, idempotent retries'
+  - topic: algorithms
+    why: 'anything that comes with a proof'
+  - topic: maths
+    why: 'a problem with a number at the end'
 
 location: North Texas
 
@@ -37,13 +48,29 @@ resume:
 analytics: none # PLACEHOLDER: none, or a privacy-friendly option
 
 work:
-  # PLACEHOLDER: needs clearance for what can be said about Otto and MG Stover.
-  # Kept general on purpose: no product name and no team size until that is cleared.
-  summary: 'PLACEHOLDER: I lead an engineering team that builds a portfolio platform for digital and traditional assets.'
+  # PLACEHOLDER: not approved yet. No employer, product or client is named, and no team size.
+  # The figures are from my own work on one production platform.
+  summary: 'PLACEHOLDER: I lead the engineering team behind a portfolio accounting platform for crypto and traditional assets. Every exchange, chain and custodian, reconciled to the last decimal.'
+  # The scale, as figures. `figure` is set large; `label` explains it.
+  scale:
+    - figure: '3.6 B'
+      label: 'rows in one table, partitioned with zero downtime'
+    - figure: '80 s → 41 ms'
+      label: 'the slowest transaction lookup, after a new index and a rewritten query'
+    - figure: '150 s → 0.8 s'
+      label: 'a reconciliation read that used to time out'
+    - figure: '100+'
+      label: 'exchanges, blockchains and custodians synced into one ledger'
+    - figure: '60 s'
+      label: 'price refresh, into a 1.3 TB partitioned history'
+    - figure: '18,000+'
+      label: 'accounts on one tax-lot and cost-basis engine'
   focus:
     - Distributed systems
     - PostgreSQL internals
-    - AWS EKS
-    - Python, Celery and Redis
-    - LLM integration
+    - Queues and autoscaled workers
+    - Ledgers, tax lots, cost basis
+    - Reconciliation
+    - On-chain and exchange data
+    - LLM tools over MCP
   explainNote: 'Seq Scan on consulting, Index Scan on fintech'

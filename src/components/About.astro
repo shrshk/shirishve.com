@@ -25,9 +25,32 @@ const [first, ...rest] = site.bio;
       {rest.map((p) => (
         <p class="about__more">{show(p)}</p>
       ))}
-      <p class="about__place tag paint">{site.location}</p>
-      <div class="about__flowers">
-        <Sunflowers seed={31} />
+      <div class="about__query paint">
+        <p class="mono about__sql">
+          <span class="kw">SELECT</span> topic, why <span class="kw">FROM</span> loves{' '}
+          <span class="kw">ORDER BY</span> depth <span class="kw">DESC</span>;
+        </p>
+        <table>
+          <tbody>
+            {site.loves.map((l) => (
+              <tr>
+                <th scope="row" class="mono">
+                  {l.topic}
+                </th>
+                <td>{l.why}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="mono about__rows">({site.loves.length} rows) · Index Scan · cost O(log n)</p>
+      </div>
+      <div class="about__garden">
+        <div class="about__flowers">
+          <Sunflowers seed={31} />
+        </div>
+        <MarginNote rotate={-3} arrow="left">
+          each seed turns 137.5° from the last. the golden angle.
+        </MarginNote>
       </div>
     </div>
 
@@ -99,13 +122,53 @@ const [first, ...rest] = site.bio;
     max-width: 34ch;
     font-size: var(--step-1);
   }
-  .about__place {
-    display: inline-block;
-    margin-top: 0.6rem;
+  /* A query result on a sheet of paper. */
+  .about__query {
+    --paint: #f7efd9;
+    max-width: 36rem;
+    margin-top: 2rem;
+    padding: 1.1rem 1.3rem 1rem;
+    color: var(--night);
+    rotate: -0.6deg;
+  }
+  .about__sql {
+    margin: 0 0 0.7rem;
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+  .about__sql .kw {
+    color: var(--cobalt);
+  }
+  .about__query table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .about__query th,
+  .about__query td {
+    padding: 0.42rem 0;
+    text-align: left;
+    vertical-align: baseline;
+    border-top: 2px dotted color-mix(in srgb, var(--night) 35%, transparent);
+  }
+  .about__query th {
+    padding-right: 1.2rem;
+    font-size: var(--step--1);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .about__rows {
+    margin: 0.7rem 0 0;
+    font-size: 0.78rem;
+  }
+  .about__garden {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+    margin-top: 2.5rem;
   }
   .about__flowers {
-    width: min(100%, 26rem);
-    margin: 2.5rem 0 0;
+    flex: 0 0 min(100%, 17rem);
   }
   .about__portrait {
     position: relative;
@@ -137,6 +200,9 @@ const [first, ...rest] = site.bio;
   @media (max-width: 46rem) {
     .about {
       grid-template-columns: 1fr;
+    }
+    .about__query th {
+      white-space: normal;
     }
     .about__portrait {
       max-width: 17rem;

@@ -16,6 +16,7 @@ const siteSchema = z.object({
   url: z.url(),
   tagline: z.string(),
   bio: z.array(z.string()),
+  loves: z.array(z.object({ topic: z.string(), why: z.string() })),
   location: z.string(),
   github: z.string(),
   socials: z.array(z.object({ platform: z.string(), url: z.url() })),
@@ -24,6 +25,7 @@ const siteSchema = z.object({
   analytics: z.string(),
   work: z.object({
     summary: z.string(),
+    scale: z.array(z.object({ figure: z.string(), label: z.string() })),
     focus: z.array(z.string()),
     explainNote: z.string(),
   }),
@@ -37,6 +39,9 @@ const projectsSchema = z.object({
       title: z.string().optional(),
       blurb: z.string().optional(),
       url: z.url().optional(),
+      /** A private repo: shown without a link, and never asked of GitHub. */
+      private: z.boolean().optional(),
+      language: z.string().optional(),
     }),
   ),
 });

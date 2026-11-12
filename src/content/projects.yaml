@@ -1,5 +1,6 @@
 # Featured repos, in display order. Only public repos ship.
 # `blurb` overrides the GitHub description. `owner` defaults to site.yaml `github`.
+# `private: true` shows a repo that is not public: no link, no GitHub lookup; give `language` by hand.
 
 projects:
   - repo: doodle-games
@@ -15,3 +16,8 @@ projects:
   - repo: mimir-claw
     title: mimir-claw
     blurb: 'The home assistant setup: skills, MCP servers, privacy limits and automations, so a new Mac comes up from one repo.'
+  - repo: mimir-finance
+    title: mimir-finance
+    blurb: 'Local-first personal finance tools: reconciliation and encrypted backups for a self-hosted portfolio tracker.'
+    private: true
+    language: TypeScript

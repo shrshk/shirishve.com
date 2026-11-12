@@ -13,6 +13,14 @@ import { show, site } from '../lib/content';
     <div>
       <h2>Work</h2>
       <p class="lede">{show(site.work.summary)}</p>
+      <ul class="scale">
+        {site.work.scale.map((x) => (
+          <li>
+            <strong>{x.figure}</strong>
+            <span>{x.label}</span>
+          </li>
+        ))}
+      </ul>
       <h3>What I work on</h3>
       <ul class="tags">
         {site.work.focus.map((f) => (
@@ -21,7 +29,7 @@ import { show, site } from '../lib/content';
       </ul>
     </div>
     <div class="plan">
-      <p class="plan__query mono">EXPLAIN SELECT * FROM career;</p>
+      <p class="plan__query mono">EXPLAIN ANALYZE SELECT * FROM career;</p>
       <VermilionStroke seed={12} width="6rem" />
       <div class="plan__note">
         <MarginNote rotate={-2} arrow="up-left">
@@ -44,6 +52,33 @@ import { show, site } from '../lib/content';
   .work h3 {
     margin-top: 2rem;
     margin-bottom: 1rem;
+  }
+  .scale {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 1.6rem 2.2rem;
+    padding: 0;
+    margin: 2.2rem 0 0;
+    list-style: none;
+  }
+  .scale li {
+    display: grid;
+    gap: 0.2rem;
+    padding-top: 0.7rem;
+    border-top: 3px solid var(--night);
+  }
+  .scale strong {
+    font-family: var(--font-display);
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+    font-size: var(--step-2);
+    font-weight: 800;
+    line-height: 1.05;
+    white-space: nowrap;
+  }
+  .scale span {
+    max-width: 28ch;
   }
   .plan__query {
     margin-bottom: 0.6rem;

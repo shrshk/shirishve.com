@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-12T12:36:38.470Z",
+  "fetchedAt": "2026-11-12T12:41:29.570Z",
   "repos": [
     {
       "repo": "doodle-games",
@@ -37,6 +37,16 @@
       "language": "Shell",
       "stars": 0,
       "pushedAt": "2026-11-09T22:41:27Z"
+    },
+    {
+      "repo": "mimir-finance",
+      "title": "mimir-finance",
+      "blurb": "Local-first personal finance tools: reconciliation and encrypted backups for a self-hosted portfolio tracker.",
+      "url": "",
+      "private": true,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": ""
     }
   ],
   "days": [
