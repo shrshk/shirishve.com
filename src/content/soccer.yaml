@@ -1,16 +1,11 @@
-# Soccer section copy. No crest, wordmark, kit or sponsor logos: words and colour only.
+# The terrace: what I love away from work.
+# The club is never named. It shows as red and white, and a scarf on a chair.
+# No crest, wordmark, kit or sponsor logos: words and colour only.
 
-club: Arsenal
+title: After hours
 line: 'North London, by way of North Texas'
-
-# PLACEHOLDER: captions and photos are not approved yet.
-postcards:
-  - title: France v Spain
-    caption: 'PLACEHOLDER: World Cup 2026 semifinal.'
-    photo: ''
-  - title: Round of 16 at AT&T Stadium
-    caption: 'PLACEHOLDER: World Cup 2026, a night in Arlington.'
-    photo: ''
+body: 'PLACEHOLDER: The rest of the evening goes to older problems. A proof that closes. A tree that stays balanced.'
+note: the scarf stays on the chair until full time.
 
 # PLACEHOLDER: Guess the Pass has no public URL yet.
 guessThePass:

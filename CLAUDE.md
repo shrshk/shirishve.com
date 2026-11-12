@@ -51,7 +51,7 @@ It must read as a painting, not a website with a blue and yellow theme.
 - Brushwork, texture and ragged edges everywhere.
 - No stock UI components, no straight dividers, no default (blurred) shadows.
 - Rough edges go on a background layer (`.paint::before`), never on the text itself.
-- Vermilion is one stroke per section until the Soccer section.
+- Vermilion is one stroke per section until the Terrace section.
 - Margin notes are dry and precise. No exclamation marks.
 
 ## Guardrails

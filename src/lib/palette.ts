@@ -136,7 +136,8 @@ export const componentPairs = [
   { name: 'Frame plate', fg: palette.night, bg: '#E7D9A9', darken: 0.2 },
   { name: 'Frame canvas', fg: palette.night, bg: palette.canvas, darken: 0 },
   { name: 'Nav strip', fg: palette.night, bg: palette.canvas, darken: 0.2 },
-  { name: 'Letter and postcards', fg: palette.night, bg: '#F7EFD9', darken: 0.2 },
+  { name: 'Letter and napkin', fg: palette.night, bg: '#F7EFD9', darken: 0.2 },
+  { name: 'Slate chalk', fg: '#F7EFD9', bg: palette.night, darken: 0 },
   { name: 'Letter link', fg: palette.cobalt, bg: '#F7EFD9', darken: 0.2 },
   { name: 'Pitch label', fg: palette.canvas, bg: palette.cypress, darken: 0 },
   // Hero: behind the text the moving sky paints only its dark blues; cobalt is the lightest.

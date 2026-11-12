@@ -1,8 +1,8 @@
 ---
-// Section 5: a café terrace on matchday evening.
-// The club is shown through red and white, original drawing and words. No crest, wordmark or kit.
+// Section 5: a café terrace in the evening. What I love away from work.
+// The club is never named: red and white, and a scarf on a chair. No crest, wordmark or kit.
+// Computer science and maths sit on the table: a chalk slate and a napkin sketch.
 import BrushDivider from './BrushDivider.astro';
-import BrushField from './BrushField.astro';
 import MarginNote from './MarginNote.astro';
 import Signature from './Signature.astro';
 import Surface from './Surface.astro';
@@ -14,24 +14,9 @@ const stripes = Array.from({ length: 1200 / STRIPE }, (_, i) => ({
   d: `M${i * STRIPE} 0H${(i + 1) * STRIPE}V58q-${STRIPE / 2} 30 -${STRIPE} 0Z`,
   red: i % 2 === 0,
 }));
-
-const pitches = [
-  [
-    { color: '#2E6B3E', opacity: 0.9, weight: 4 },
-    { color: '#3F8650', opacity: 0.85, weight: 3 },
-    { color: palette.cypress, opacity: 0.8, weight: 2 },
-    { color: palette.chrome, opacity: 0.5, weight: 1 },
-  ],
-  [
-    { color: palette.cobalt, opacity: 0.85, weight: 3 },
-    { color: palette.night, opacity: 0.8, weight: 3 },
-    { color: '#3F8650', opacity: 0.85, weight: 3 },
-    { color: palette.chrome, opacity: 0.7, weight: 1 },
-  ],
-];
 ---
 
-<Surface name="terrace" seed={89} id="soccer">
+<Surface name="terrace" seed={89} id="terrace">
   <svg class="awning" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true" focusable="false">
     {stripes.map((s) => (
       <path d={s.d} fill={s.red ? palette.vermilion : '#F7EFD9'} />
@@ -41,10 +26,9 @@ const pitches = [
 
   <div class="wrap terrace">
     <div class="terrace__words">
-      <h2>Matchday</h2>
-      <p class="lede">
-        {soccer.club}. {soccer.line}.
-      </p>
+      <h2>{soccer.title}</h2>
+      <p class="lede">{soccer.line}.</p>
+      <p>{show(soccer.body)}</p>
       <p>
         <strong>Guess the Pass.</strong> {show(soccer.guessThePass.line)}
       </p>
@@ -57,7 +41,7 @@ const pitches = [
       )}
       <div class="terrace__note">
         <MarginNote rotate={-2} arrow="right">
-          the scarf stays on the chair until full time.
+          {soccer.note}
         </MarginNote>
       </div>
     </div>
@@ -85,35 +69,91 @@ const pitches = [
       </g>
     </svg>
 
-    <ul class="postcards">
-      {soccer.postcards.map((p, i) => (
-        <li class="postcard paint">
-          <div class="postcard__picture" role="img" aria-label={`A painted postcard: ${p.title}`}>
-            {p.photo ? (
-              <img src={p.photo} alt="" loading="lazy" />
-            ) : (
-              <BrushField
-                seed={70 + i}
-                fit
-                base={i ? palette.night : '#2E6B3E'}
-                width={300}
-                height={190}
-                strokes={pitches[i % 2]}
-                cell={17}
-                length={[24, 54]}
-                thickness={[7, 13]}
-                angle={i ? 0.3 : 0}
-                swirl={i ? 1.6 : 0.35}
-              />
-            )}
-          </div>
-          <div class="postcard__back">
-            <strong>{p.title}</strong>
-            <span>{show(p.caption)}</span>
-          </div>
-          <span class="postcard__stamp" aria-hidden="true" />
-        </li>
-      ))}
+    <ul class="table">
+      <li class="slate">
+        <svg
+          viewBox="0 0 300 190"
+          role="img"
+          aria-label="A café chalkboard. Today: Euler's identity. Espresso costs O(1), a refill O(log n). A chalk spiral in the corner."
+        >
+          <rect class="slate__wood" x="3" y="3" width="294" height="184"></rect>
+          <rect class="slate__board" x="13" y="13" width="274" height="164"></rect>
+          <g class="chalk">
+            <text x="30" y="46" class="chalk__head">
+              today
+            </text>
+            <path class="chalk__line" d="M29 54C52 51 76 56 98 52"></path>
+            <text x="30" y="92" class="chalk__maths">
+              e
+              <tspan dy="-11" font-size="17">
+                iπ
+              </tspan>
+              <tspan dy="11"> + 1 = 0</tspan>
+            </text>
+            <text x="30" y="126">
+              espresso
+            </text>
+            <text x="186" y="126" text-anchor="end">
+              O(1)
+            </text>
+            <text x="30" y="156">
+              refill
+            </text>
+            <text x="186" y="156" text-anchor="end">
+              O(log n)
+            </text>
+            <path class="chalk__dots" d="M104 121H140M76 151H112"></path>
+            <path
+              class="chalk__line"
+              d="M232 96a4 4 0 0 1 4 -4a4 4 0 0 1 4 4a8 8 0 0 1 -8 8a12 12 0 0 1 -12 -12a20 20 0 0 1 20 -20a32 32 0 0 1 32 32"
+            ></path>
+          </g>
+        </svg>
+      </li>
+      <li class="napkin paint">
+        <svg
+          viewBox="0 0 300 190"
+          role="img"
+          aria-label="A sketch on a napkin: three passes between three players form a right triangle. Under it, a squared plus b squared equals c squared."
+        >
+          <g class="ink">
+            <path d="M70 128H196M206 122V52M196 40 78 120"></path>
+            <path d="M188 122 198 128 188 134M200 62 206 50 212 62M90 106 76 122 96 118"></path>
+            <path class="ink__corner" d="M192 128V114H206"></path>
+            <path class="ink__run" d="M206 38C222 22 244 22 258 36"></path>
+          </g>
+          <g class="ink__players">
+            <circle cx="62" cy="128" r="7"></circle>
+            <circle cx="206" cy="128" r="7"></circle>
+            <circle cx="206" cy="40" r="7"></circle>
+          </g>
+          <g class="ink__words">
+            <text x="128" y="148">
+              a
+            </text>
+            <text x="218" y="92">
+              b
+            </text>
+            <text x="120" y="74">
+              c
+            </text>
+            <text x="34" y="178" class="ink__maths">
+              a
+              <tspan dy="-9" font-size="15">
+                2
+              </tspan>
+              <tspan dy="9"> + b</tspan>
+              <tspan dy="-9" font-size="15">
+                2
+              </tspan>
+              <tspan dy="9"> = c</tspan>
+              <tspan dy="-9" font-size="15">
+                2
+              </tspan>
+            </text>
+          </g>
+        </svg>
+      </li>
     </ul>
     <Signature seed={27} />
   </div>
@@ -173,7 +213,7 @@ const pitches = [
     stroke-width: 3;
   }
 
-  .postcards {
+  .table {
     grid-column: 1 / -1;
     display: flex;
     flex-wrap: wrap;
@@ -182,56 +222,81 @@ const pitches = [
     margin: 1rem 0 0;
     list-style: none;
   }
-  .postcard {
-    --paint: #f7efd9;
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: 1rem;
-    flex: 1 1 19rem;
-    max-width: 30rem;
-    padding: 0.9rem;
-    color: var(--night);
+  .table li {
+    flex: 1 1 15rem;
+    max-width: 21rem;
+  }
+  .table svg {
+    display: block;
+    width: 100%;
+    overflow: visible;
+  }
+  .table text {
+    font-family: var(--font-hand);
+    font-size: 24px;
+  }
+
+  .slate {
     rotate: -1.6deg;
   }
-  .postcard:nth-child(even) {
+  .slate__wood {
+    fill: var(--gilt-dark);
+    filter: url(#rough);
+  }
+  .slate__board {
+    fill: var(--night);
+    filter: url(#rough-fine);
+  }
+  .chalk text {
+    fill: #f7efd9;
+  }
+  .chalk .chalk__head {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .chalk .chalk__maths {
+    font-size: 30px;
+  }
+  .chalk path {
+    fill: none;
+    stroke: #f7efd9;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .chalk .chalk__dots {
+    stroke-dasharray: 1 7;
+    opacity: 0.7;
+  }
+
+  .napkin {
+    --paint: #f7efd9;
+    padding: 0.6rem;
+    color: var(--night);
     rotate: 1.3deg;
     margin-top: 1.2rem;
   }
-  .postcard__picture {
-    position: relative;
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
+  .ink path {
+    fill: none;
+    stroke: var(--night);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
-  .postcard__picture img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .ink .ink__corner {
+    stroke-width: 1.4;
   }
-  .postcard__back {
-    display: grid;
-    align-content: end;
-    gap: 0.3rem;
-    padding-top: 3.2rem;
-    font-family: var(--font-hand);
-    font-size: 1.3rem;
-    line-height: 1.1;
+  .ink .ink__run {
+    stroke-dasharray: 5 6;
   }
-  .postcard__back strong {
-    font-family: var(--font-display);
-    font-variation-settings:
-      'SOFT' 100,
-      'WONK' 1;
-    font-size: 1.05rem;
+  .ink__players circle {
+    fill: var(--vermilion);
+    filter: url(#rough-fine);
   }
-  .postcard__stamp {
-    position: absolute;
-    top: 0.9rem;
-    right: 0.9rem;
-    width: 2.1rem;
-    height: 2.6rem;
-    background: var(--vermilion);
-    outline: 2px dashed #f7efd9;
-    outline-offset: -5px;
+  .ink__words text {
+    fill: var(--night);
+  }
+  .ink__words .ink__maths {
+    font-size: 26px;
   }
   @media (max-width: 46rem) {
     .terrace {

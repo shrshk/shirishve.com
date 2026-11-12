@@ -44,9 +44,10 @@ const projectsSchema = z.object({
 });
 
 const soccerSchema = z.object({
-  club: z.string(),
+  title: z.string(),
   line: z.string(),
-  postcards: z.array(z.object({ title: z.string(), caption: z.string(), photo: z.string() })),
+  body: z.string(),
+  note: z.string(),
   guessThePass: z.object({ url: z.string(), line: z.string() }),
 });
 
