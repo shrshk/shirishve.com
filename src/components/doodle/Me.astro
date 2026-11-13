@@ -110,35 +110,41 @@ const { at } = Astro.props;
       opacity="0.34"
     ></path>
     <path
-      d="M39.6,44 Q50,58.5 60.4,44 Q50,46.6 39.6,44 Z"
-      fill="#8A3B36"
+      d="M41.8,45.5 Q50,55 58.2,45.5 Q50,47.5 41.8,45.5 Z"
+      fill="#FFFDF6"
       stroke={HAIR}
       stroke-width="1"
     ></path>
-    <path
-      d="M40.6,44.6 Q50,47.2 59.4,44.6 Q58.6,47 57.4,48.2 Q50,50 42.6,48.2 Q41.4,47 40.6,44.6 Z"
-      fill="#FFFDF6"
-    ></path>
-    <path d="M45.4,53 Q50,50.6 54.6,53 Q50,56.4 45.4,53 Z" fill="#E88C8C"></path>
     <ellipse cx="35.4" cy="39.6" rx="3.4" ry="2" fill="#F28B9A" opacity="0.5"></ellipse>
     <ellipse cx="64.6" cy="39.6" rx="3.4" ry="2" fill="#F28B9A" opacity="0.5"></ellipse>
-    <!-- short sides, spikes on top -->
+    <!-- short sides, the top swept up and across in three locks, an uneven hairline -->
     <path
-      d="M29.4,27.5 C28.6,18.5 32,12 38,9 L40.5,4 L44.5,7.5 L48.5,1 L52.5,6.5 L57.5,1 L60,6.5 L66,4 L65.5,10.5 C70,14.5 71.6,20.5 70.6,27.5 C67.5,20 60,16 50,16 C40,16 32.5,20 29.4,27.5 Z"
+      d="M30.6,34 C30,28 29.4,22 30,17 C30.6,12.5 32.5,9.5 35.5,8 C38,3.5 44,2.5 47.5,5 C50.5,0.5 58.5,-0.5 62.5,3 C66.5,2 70.5,5.5 69,10.5 C70.8,15 70.8,24 69.4,34 C68.8,30 68,27 66.6,25 C66,22 64.5,20 62,19 C58,18 55,19.6 52,19.2 C48,18.6 45,17.4 41,17.8 C37.5,18.2 35.2,20 34,23 C32.4,25.5 31.4,29 30.6,34 Z"
       fill={HAIR}
     ></path>
     <path
-      d="M36,25.4 Q40.4,22 44.6,24.6 M55.4,24.6 Q59.6,22 64,25.4"
+      d="M37,15 C42,9 50,7 57,8.5 M44,16 C49,11 57,9.5 64,11.5 M34,12 C36,9.5 39,8 42,7.5"
+      fill="none"
+      stroke="#6B5A4E"
+      stroke-width="0.9"
+      stroke-linecap="round"
+      opacity="0.85"
+    ></path>
+    <path
+      d="M36,26.4 Q40.2,24 44.6,25.6 M55.4,25.6 Q59.8,24 64,26.4"
       fill="none"
       stroke={HAIR}
       stroke-width="1.7"
       stroke-linecap="round"
     ></path>
     <g class="me__eyes">
-      <circle cx="41" cy="33" r="2.5" fill={HAIR}></circle>
-      <circle cx="59" cy="33" r="2.5" fill={HAIR}></circle>
-      <circle cx="41.9" cy="32" r="0.9" fill="#fff"></circle>
-      <circle cx="59.9" cy="32" r="0.9" fill="#fff"></circle>
+      <path
+        d="M37.2,34.4 Q41,29.4 44.8,34.4 M55.2,34.4 Q59,29.4 62.8,34.4"
+        fill="none"
+        stroke={HAIR}
+        stroke-width="2.1"
+        stroke-linecap="round"
+      ></path>
     </g>
   </g>
 </g>
