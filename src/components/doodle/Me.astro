@@ -16,11 +16,13 @@ const TROUSER = '#4A4640';
 interface Props {
   /** How far along the stage's thread the kick happens (0 to 1). */
   at?: number;
+  /** What the doodle does at that moment. */
+  pose?: 'kick' | 'cheer';
 }
-const { at } = Astro.props;
+const { at, pose = 'kick' } = Astro.props;
 ---
 
-<g class:list={['me', at !== undefined && 'cue']} data-at={at}>
+<g class:list={['me', `me--${pose}`, at !== undefined && 'cue']} data-at={at}>
   <path
     d="M34,98 l8,-2 M44,99 l9,-2.4 M55,98.5 l8,-2"
     stroke="#9A8F80"
@@ -175,17 +177,30 @@ const { at } = Astro.props;
     transform-origin: 50px 56px;
   }
   /* the kick: leg through, arms out for balance, head up to watch the ball */
-  .me.on .me__leg--kick {
+  .me--kick.on .me__leg--kick {
     transform: rotate(-58deg);
   }
-  .me.on .me__arm--back {
+  .me--kick.on .me__arm--back {
     transform: rotate(48deg);
   }
-  .me.on .me__arm--front {
+  .me--kick.on .me__arm--front {
     transform: rotate(-62deg);
   }
-  .me.on .me__head {
+  .me--kick.on .me__head {
     transform: rotate(7deg);
+  }
+  /* the cheer: both arms up */
+  .me--cheer .me__leg--kick {
+    transform: none;
+  }
+  .me--cheer.on .me__arm--back {
+    transform: rotate(125deg);
+  }
+  .me--cheer.on .me__arm--front {
+    transform: rotate(-125deg);
+  }
+  .me--cheer.on .me__head {
+    transform: rotate(-5deg);
   }
   .thread-live .me.cue {
     opacity: 1;

@@ -124,3 +124,35 @@ export function stroke(a: Pt, b: Pt, seed: number, amp = 1.1): string {
 export const MARGIN_X = 540;
 /** Every stage is this many units wide. */
 export const STAGE_W = 600;
+
+function lengthOf(pts: Pt[]): number {
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) {
+    total += Math.hypot(pts[i]![0] - pts[i - 1]![0], pts[i]![1] - pts[i - 1]![1]);
+  }
+  return total;
+}
+
+/**
+ * A thread made of named pieces. `at.name` is how far along the whole thread that
+ * piece ends (0 to 1), so a note can appear when the ball reaches it.
+ */
+export function route<K extends string>(
+  pieces: Record<K, Pt[]>,
+  seed: number,
+  amp = 0.9,
+): { d: string; at: Record<K, number> } {
+  const names = Object.keys(pieces) as K[];
+  const all = join(...names.map((n) => pieces[n]));
+  const total = lengthOf(all);
+  const at = {} as Record<K, number>;
+  let run = 0;
+  let from: Pt | undefined;
+  for (const n of names) {
+    const piece = from ? [from, ...pieces[n]] : pieces[n];
+    run += lengthOf(piece);
+    from = pieces[n][pieces[n].length - 1];
+    at[n] = Math.min(1, run / total);
+  }
+  return { d: hand(all, seed, amp), at };
+}

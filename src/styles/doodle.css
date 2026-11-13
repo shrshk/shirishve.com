@@ -93,8 +93,7 @@ a:focus-visible {
   position: relative;
   width: min(100%, 760px, max(340px, 92svh));
   margin: 0 auto;
-  /* room below the last drawing, so its end can reach the pen line (see thread.ts) */
-  padding: env(safe-area-inset-top) 0 42svh;
+  padding: env(safe-area-inset-top) 0 max(56px, env(safe-area-inset-bottom));
 }
 
 .stage {
@@ -237,4 +236,85 @@ a:focus-visible {
   .me * {
     transition: none !important;
   }
+}
+
+/* inside the notes */
+.slip h3 {
+  margin: 16px 0 6px;
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--crayon-blue);
+}
+.slip .qed {
+  font-family: var(--font-script);
+  color: var(--ink-soft);
+}
+.slip .problems {
+  margin: 0;
+  padding-left: 1.4em;
+}
+.slip .problems li {
+  padding: 4px 0;
+}
+.slip .problems strong {
+  display: block;
+}
+.slip .problems span {
+  color: var(--ink-soft);
+}
+.slip .questions li {
+  font-family: var(--font-script);
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+.slip .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin-top: 14px;
+}
+.slip .tags span {
+  padding: 1px 10px;
+  font-size: 1rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px 5px 10px 6px / 6px 10px 5px 12px;
+}
+.slip .boxes li {
+  display: grid;
+  gap: 2px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1.6px solid var(--ink);
+  border-radius: 5px 12px 6px 10px / 10px 5px 12px 6px;
+}
+.slip .boxes li:nth-child(odd) {
+  rotate: -0.5deg;
+}
+.slip .boxes li:nth-child(even) {
+  rotate: 0.6deg;
+}
+.slip .boxes li > a,
+.slip .boxes li > strong {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--crayon-blue);
+}
+.slip .boxes small {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+.slip .scarf {
+  display: block;
+  width: min(220px, 70%);
+  margin: 2px 0 8px;
+  rotate: -2deg;
+}
+.ring {
+  transform-box: fill-box;
+  transform-origin: center;
 }

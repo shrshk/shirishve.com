@@ -4,8 +4,9 @@ import { MARGIN_X, STAGE_W, hand } from '../../lib/doodle';
 
 interface Props {
   seed: number;
+  id?: string;
 }
-const { seed } = Astro.props;
+const { seed, id } = Astro.props;
 // Stretched to the height of the note, so the wobble is drawn for a 100-unit drop.
 const thread = hand(
   [
@@ -17,7 +18,7 @@ const thread = hand(
 );
 ---
 
-<section class="gap" data-segment>
+<section class="gap" data-segment id={id}>
   <svg class="gap__thread" viewBox={`0 0 ${STAGE_W} 100`} preserveAspectRatio="none" aria-hidden="true">
     <path class="thread" data-thread d={thread} pathLength="1"></path>
   </svg>

@@ -1,0 +1,51 @@
+---
+// A profile link with its brand icon (Simple Icons, unmodified) or a letter.
+import * as icons from 'simple-icons';
+
+interface Props {
+  platform: string;
+  url: string;
+}
+const { platform, url } = Astro.props;
+const key = 'si' + platform.charAt(0).toUpperCase() + platform.slice(1).toLowerCase();
+const icon = (icons as unknown as Record<string, { title: string; path: string } | undefined>)[key];
+// Names for platforms that Simple Icons does not carry.
+const names: Record<string, string> = { linkedin: 'LinkedIn' };
+const letters: Record<string, string> = { linkedin: 'in' };
+const title =
+  icon?.title ?? names[platform.toLowerCase()] ?? platform.charAt(0).toUpperCase() + platform.slice(1);
+---
+
+<a class="social" href={url} rel="me noopener">
+  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+    {icon ? (
+      <path d={icon.path} fill="currentColor" />
+    ) : (
+      <text x="12" y="18" text-anchor="middle" font-size="19" font-weight="700" fill="currentColor">
+        {letters[platform.toLowerCase()] ?? title.charAt(0)}
+      </text>
+    )}
+  </svg>
+  <span>{title}</span>
+</a>
+
+<style>
+  .social {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--paper);
+    border: 1.6px solid var(--ink);
+    border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  }
+  .social:hover {
+    color: var(--crayon-blue);
+    border-color: var(--crayon-blue);
+  }
+  .social svg text {
+    font-family: var(--font-script);
+  }
+</style>

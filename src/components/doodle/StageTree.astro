@@ -1,0 +1,156 @@
+---
+// Scene 3: computer science. The thread searches a binary tree for one key, then runs
+// through a queue of jobs to a worker.
+import { MARGIN_X, STAGE_W, cubic, route, stroke, type Pt } from '../../lib/doodle';
+
+const H = 700;
+const R = 23;
+interface Node {
+  key: number;
+  at: Pt;
+  parent?: number;
+}
+const nodes: Node[] = [
+  { key: 50, at: [290, 110] },
+  { key: 25, at: [170, 210], parent: 50 },
+  { key: 75, at: [410, 210], parent: 50 },
+  { key: 12, at: [110, 310], parent: 25 },
+  { key: 37, at: [230, 310], parent: 25 },
+  { key: 62, at: [360, 310], parent: 75 },
+  { key: 88, at: [460, 310], parent: 75 },
+  { key: 31, at: [190, 410], parent: 37 },
+  { key: 42, at: [270, 410], parent: 37 },
+];
+const of = (key: number) => nodes.find((n) => n.key === key)!.at;
+const edges = nodes
+  .filter((n) => n.parent !== undefined)
+  .map((n, i) => stroke(of(n.parent!), n.at, 50 + i, 1));
+
+const QUEUE_Y = 548;
+const jobs = [96, 156, 216, 276, 336];
+const WORKER: Pt = [452, QUEUE_Y];
+
+const thread = route(
+  {
+    root: cubic([MARGIN_X, 0], [MARGIN_X, 60], [380, 30], of(50), 24),
+    n25: [of(50), of(25)],
+    n37: [of(25), of(37)],
+    n42: [of(37), of(42)],
+    drop: cubic(of(42), [270, 480], [50, 440], [56, QUEUE_Y], 30),
+    queue: [
+      [56, QUEUE_Y],
+      [WORKER[0], QUEUE_Y],
+    ],
+    exit: cubic(WORKER, [MARGIN_X, QUEUE_Y + 6], [MARGIN_X, 620], [MARGIN_X, H], 24),
+  },
+  61,
+);
+const visited: [number, number][] = [
+  [50, thread.at.root],
+  [25, thread.at.n25],
+  [37, thread.at.n37],
+  [42, thread.at.n42],
+];
+---
+
+<svg class="stage" viewBox={`0 0 ${STAGE_W} ${H}`} data-segment role="img" aria-labelledby="tree-title">
+  <title id="tree-title">
+    The red line searches a binary tree for the key 42. It visits 50, 25, 37 and 42, then runs through a queue
+    of five jobs to a worker.
+  </title>
+
+  <text x="40" y="70" font-size="40" font-weight="700" class="red">
+    find 42
+  </text>
+
+  {edges.map((e) => (
+    <path class="pencil" d={e} />
+  ))}
+  <path class="thread" data-thread d={thread.d} pathLength="1"></path>
+
+  {nodes.map((n) => (
+    <g>
+      <circle cx={n.at[0]} cy={n.at[1]} r={R} fill="#FBF8F0" stroke="#3B2F2A" stroke-width="2" />
+      <text x={n.at[0]} y={n.at[1] + 9} font-size="27" font-weight="700" text-anchor="middle">
+        {n.key}
+      </text>
+    </g>
+  ))}
+  {visited.map(([key, at]) => (
+    <circle
+      class="cue ring"
+      data-at={at.toFixed(3)}
+      cx={of(key)[0]}
+      cy={of(key)[1]}
+      r={R + 5}
+      fill="none"
+      stroke="#D9534A"
+      stroke-width="2.6"
+      stroke-dasharray="6 5"
+    />
+  ))}
+  <g class="cue" data-at={thread.at.n25.toFixed(3)}>
+    <text x="52" y="188" font-size="25" class="blue">
+      42 &lt; 50. go left.
+    </text>
+  </g>
+  <g class="cue" data-at={thread.at.n37.toFixed(3)}>
+    <text x="270" y="276" font-size="25" class="blue">
+      42 &gt; 25. go right.
+    </text>
+  </g>
+  <g class="cue" data-at={thread.at.n42.toFixed(3)}>
+    <text x="318" y="404" font-size="38" font-weight="700">
+      O(log n)
+    </text>
+    <text x="320" y="434" font-size="24" class="blue">
+      nine keys, four looks.
+    </text>
+  </g>
+
+  <g class="cue" data-at={(thread.at.drop - 0.04).toFixed(3)}>
+    <text x="78" y="500" font-size="28" class="blue">
+      what runs next?
+    </text>
+  </g>
+  {jobs.map((x, i) => (
+    <g>
+      <rect
+        x={x - 22}
+        y={QUEUE_Y - 22}
+        width="44"
+        height="44"
+        rx="5"
+        fill="#FBF8F0"
+        stroke="#3B2F2A"
+        stroke-width="2"
+        transform={`rotate(${[-3, 2, -1, 3, -2][i]} ${x} ${QUEUE_Y})`}
+      />
+      <text x={x} y={QUEUE_Y + 8} font-size="22" text-anchor="middle">
+        job
+      </text>
+    </g>
+  ))}
+  <text x="96" y="604" font-size="23" class="blue">
+    a queue: first in, first out
+  </text>
+
+  <!-- the worker: a small round machine with a face -->
+  <g>
+    <circle cx={WORKER[0]} cy={WORKER[1]} r="30" fill="#E3A84B"></circle>
+    <circle cx={WORKER[0]} cy={WORKER[1]} r="30" fill="url(#streak)"></circle>
+    <circle cx={WORKER[0]} cy={WORKER[1]} r="30" fill="none" stroke="#A8682A" stroke-width="2"></circle>
+    <circle cx={WORKER[0] - 10} cy={WORKER[1] - 4} r="3.2" fill="#2B211D"></circle>
+    <circle cx={WORKER[0] + 10} cy={WORKER[1] - 4} r="3.2" fill="#2B211D"></circle>
+    <path class="pencil" d={`M${WORKER[0] - 8},${WORKER[1] + 9} q8,7 16,0`}></path>
+    <path class="pencil" d={`M${WORKER[0]},${WORKER[1] - 30} l0,-12 m-6,0 l12,0`}></path>
+  </g>
+  <text x={WORKER[0]} y={QUEUE_Y + 58} font-size="23" text-anchor="middle" class="blue">
+    worker
+  </text>
+  <g class="cue" data-at={thread.at.queue.toFixed(3)}>
+    <text x="388" y="478" font-size="24" class="blue">
+      done. or did it only stop?
+    </text>
+  </g>
+</svg>

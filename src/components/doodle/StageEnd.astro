@@ -1,0 +1,57 @@
+---
+// Scene 7: the end. The dot is the ball. It falls out of the night, bounces once and
+// rolls back to the feet it left.
+import Me from './Me.astro';
+import { STAGE_W, plot, rng, route, stroke } from '../../lib/doodle';
+
+const H = 470;
+const GROUND = 380;
+const REST = GROUND - 12;
+
+const bounce = (x: number) => 286 + (REST - 286) * ((x - 255) / 45) ** 2;
+const thread = route(
+  {
+    fall: [
+      [300, 0],
+      [300, REST],
+    ],
+    bounce: plot(bounce, 300, 210, 24),
+    roll: [
+      [210, REST],
+      [132, REST],
+    ],
+  },
+  131,
+  0.7,
+);
+const ground = stroke([24, GROUND], [576, GROUND], 133, 1.6);
+const rand = rng(18);
+const tufts = Array.from({ length: 10 }, (_, i) => {
+  const x = 40 + i * 55 + rand() * 20;
+  return `M${x},${GROUND} l-3,-8 M${x + 2},${GROUND} l1,-10 M${x + 4},${GROUND} l4,-7`;
+}).join(' ');
+---
+
+<svg class="stage" viewBox={`0 0 ${STAGE_W} ${H}`} data-segment role="img" aria-labelledby="end-title">
+  <title id="end-title">
+    The red line falls to the ground, bounces once and rolls to the feet of the doodle of Shirish, who cheers.
+  </title>
+  <path class="pencil" d={ground}></path>
+  <path class="pencil pencil--light" d={tufts} style="stroke:#6FA05A"></path>
+
+  <g class="cue" data-at={thread.at.fall.toFixed(3)}>
+    <text x="336" y="200" font-size="27" class="blue">
+      the dot was the ball.
+    </text>
+  </g>
+  <g class="cue" data-at="0.97">
+    <text x="336" y="238" font-size="38" font-weight="700">
+      one line. no lifts.
+    </text>
+  </g>
+
+  <path class="thread" data-thread d={thread.d} pathLength="1"></path>
+  <g transform={`translate(-6 ${GROUND - 96 * 1.72}) scale(1.72)`}>
+    <Me at={0.95} pose="cheer" />
+  </g>
+</svg>

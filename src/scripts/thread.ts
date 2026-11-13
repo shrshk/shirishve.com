@@ -54,6 +54,16 @@ export function mountThread(): void {
       s.end = Math.max(previous + 1, r.bottom + scrollY - pen);
       previous = s.end;
     }
+    // A page that ends before its last piece reaches the pen line: squeeze the whole
+    // chain a little, so the thread still finishes at the bottom of the page.
+    const most = document.documentElement.scrollHeight - innerHeight - 2;
+    if (previous > most && most > 0) {
+      const k = most / previous;
+      for (const s of segments) {
+        s.start *= k;
+        s.end *= k;
+      }
+    }
     unit = root!.getBoundingClientRect().width / 600;
     const svg = ball?.firstElementChild as SVGElement | null;
     if (svg) {
@@ -63,8 +73,7 @@ export function mountThread(): void {
     }
   }
 
-  function draw(): void {
-    const y = scrollY;
+  function draw(y: number): void {
     let active = segments[0]!;
     let activeP = 0;
     for (const s of segments) {
@@ -91,22 +100,47 @@ export function mountThread(): void {
     ball.style.transform = `translate(${x.toFixed(1)}px, ${yy.toFixed(1)}px) rotate(${rolled.toFixed(1)}deg)`;
   }
 
-  let queued = false;
+  // The pen does not jump to where the page was scrolled. It runs there, so one notch
+  // of a mouse wheel is a short flight of the ball and not a teleport.
+  const EASE_MS = 160; // how quickly the pen closes on the scroll position
+  let shown = scrollY;
+  let last = 0;
+  let running = false;
+
+  function frame(now: number): void {
+    const dt = Math.min(64, now - last);
+    last = now;
+    const target = scrollY;
+    const gap = target - shown;
+    // far behind (a jump to an anchor): start close to the target
+    const far = innerHeight * 1.5;
+    if (Math.abs(gap) > far) shown = target - Math.sign(gap) * far;
+    let step = (target - shown) * (1 - Math.exp(-dt / EASE_MS));
+    const cap = innerHeight * 2.2 * (dt / 1000);
+    if (Math.abs(step) > cap) step = Math.sign(step) * cap;
+    shown += step;
+    if (Math.abs(target - shown) < 0.4) shown = target;
+    draw(shown);
+    if (shown === target) {
+      running = false;
+      return;
+    }
+    requestAnimationFrame(frame);
+  }
   function onScroll(): void {
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(() => {
-      queued = false;
-      draw();
-    });
+    if (running) return;
+    running = true;
+    last = performance.now();
+    requestAnimationFrame(frame);
   }
   function onResize(): void {
     measure();
-    draw();
+    draw(shown);
+    onScroll();
   }
 
   measure();
-  draw();
+  draw(shown);
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onResize);
   // Fonts change the height of the notes when they arrive.

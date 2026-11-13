@@ -1,0 +1,142 @@
+---
+// Scene 6: the universe. The paper turns to night. Every star is a day with a public
+// commit. The thread winds in to one dot, then falls out of the night.
+import { MARGIN_X, STAGE_W, hand, rng, route, type Pt } from '../../lib/doodle';
+import { github } from '../../lib/github';
+
+const H = 860;
+const TOP = 36;
+const BOTTOM = 800;
+const DOT: Pt = [300, 440];
+const { days } = await github();
+
+const sky = hand(
+  [
+    [10, TOP],
+    [590, TOP + 4],
+    [588, BOTTOM],
+    [12, BOTTOM - 5],
+    [10, TOP],
+  ],
+  101,
+  2.4,
+);
+
+const rand = rng(1054);
+const stars = days
+  .filter((day) => day.level > 0)
+  .map((day) => ({
+    x: 30 + rand() * 540,
+    y: TOP + 24 + rand() * (BOTTOM - TOP - 48),
+    r: 0.9 + day.level * 0.55,
+    warm: rand() < 0.3,
+  }));
+
+// one turn of a spiral, for a far galaxy
+const galaxy = (cx: number, cy: number, size: number, seed: number) =>
+  hand(
+    Array.from({ length: 50 }, (_, i) => {
+      const a = (i / 49) * 4.2 * Math.PI;
+      const r = (size * i) / 49;
+      return [cx + r * Math.cos(a), cy + r * Math.sin(a) * 0.6] as const;
+    }),
+    seed,
+    0.4,
+  );
+
+// the thread winds in: every turn is closer to the dot
+const TURNS = 2.6;
+const START = 232;
+const spiral: Pt[] = Array.from({ length: 220 }, (_, i) => {
+  const t = i / 219;
+  const a = t * TURNS * 2 * Math.PI;
+  const r = START * (1 - t) ** 1.25;
+  return [DOT[0] + r * Math.cos(a), DOT[1] + r * Math.sin(a)] as const;
+});
+const thread = route(
+  {
+    arrive: [
+      [MARGIN_X, 0],
+      [DOT[0] + START, DOT[1]],
+    ],
+    spiral,
+    fall: [DOT, [DOT[0], H]],
+  },
+  111,
+  0.5,
+);
+---
+
+<svg
+  class="stage night"
+  viewBox={`0 0 ${STAGE_W} ${H}`}
+  data-segment
+  role="img"
+  aria-labelledby="universe-title"
+>
+  <title id="universe-title">
+    The paper turns to a night sky. Each star is a day with a public commit. The red line winds in a spiral to
+    one dot at the centre, then falls straight down out of the night.
+  </title>
+
+  <path d={sky} fill="#1B2040"></path>
+  <path d={sky} fill="url(#streak-dark)"></path>
+  <path class="pencil" d={sky}></path>
+
+  {stars.map((s) => (
+    <circle
+      cx={s.x.toFixed(1)}
+      cy={s.y.toFixed(1)}
+      r={s.r.toFixed(1)}
+      fill={s.warm ? '#E9C24A' : '#F4F1EA'}
+    />
+  ))}
+  <path class="chalk" d={galaxy(120, 150, 34, 121)}></path>
+  <path class="chalk" d={galaxy(470, 690, 28, 122)}></path>
+
+  <text x="40" y="100" font-size="42" font-weight="700" class="chalk-text chalk-text--warm">
+    zoom out
+  </text>
+  <g class="cue" data-at="0.12">
+    <text x="42" y="762" font-size="24" class="chalk-text">
+      every star is a day I pushed code.
+    </text>
+  </g>
+  <g class="cue" data-at={(thread.at.spiral - 0.12).toFixed(3)}>
+    <text x="200" y="250" font-size="25" class="chalk-text">
+      run the film backward:
+    </text>
+  </g>
+  <g class="cue" data-at={thread.at.spiral.toFixed(3)}>
+    <text
+      x={DOT[0] + 16}
+      y={DOT[1] - 12}
+      font-size="30"
+      font-weight="700"
+      class="chalk-text chalk-text--warm"
+    >
+      t = 0
+    </text>
+    <text x="150" y={DOT[1] + 150} font-size="26" class="chalk-text">
+      all of it was one dot.
+    </text>
+  </g>
+
+  <path class="thread" data-thread d={thread.d} pathLength="1"></path>
+</svg>
+
+<style is:global>
+  .chalk {
+    fill: none;
+    stroke: #f4f1ea;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    opacity: 0.75;
+  }
+  .stage text.chalk-text {
+    fill: #f4f1ea;
+  }
+  .stage text.chalk-text--warm {
+    fill: #e9c24a;
+  }
+</style>

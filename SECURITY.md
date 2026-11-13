@@ -7,7 +7,7 @@ Very little, on purpose.
 - The site is static files on GitHub Pages. There is no server of mine, no database, no login, no
   form, no cookie and no browser storage.
 - Nothing is hosted at home. No request to shirishve.com reaches a machine I own.
-- The pages load only their own files: two small scripts, stylesheets, fonts and one SVG texture. A
+- The pages load only their own files: one small script, one stylesheet and two fonts. A
   Content-Security-Policy in every page allows nothing else, and no inline script.
 - No analytics and no third-party request at run time.
 

@@ -1,20 +1,241 @@
 ---
-import Base from '../layouts/Base.astro';
-import About from '../components/About.astro';
-import Contact from '../components/Contact.astro';
-import Hero from '../components/Hero.astro';
-import Nav from '../components/Nav.astro';
-import Projects from '../components/Projects.astro';
-import Soccer from '../components/Soccer.astro';
-import Work from '../components/Work.astro';
+// One page, one line. A ball is kicked at the top; the red thread follows it through
+// maths, computer science and physics, and brings it back at the bottom.
+import Notebook from '../layouts/Notebook.astro';
+import Ball from '../components/doodle/Ball.astro';
+import Gap from '../components/doodle/Gap.astro';
+import Social from '../components/doodle/Social.astro';
+import StageDescent from '../components/doodle/StageDescent.astro';
+import StageEnd from '../components/doodle/StageEnd.astro';
+import StageKick from '../components/doodle/StageKick.astro';
+import StageSlits from '../components/doodle/StageSlits.astro';
+import StageTree from '../components/doodle/StageTree.astro';
+import StageUniverse from '../components/doodle/StageUniverse.astro';
+import { show, site, soccer } from '../lib/content';
+import { ago, github } from '../lib/github';
+
+const [proposition, ...proof] = site.bio.map(show);
+const { repos, fetchedAt } = await github();
+const year = new Date().getFullYear();
 ---
 
-<Base>
-  <Nav slot="nav" />
-  <Hero />
-  <About />
-  <Work />
-  <Projects />
-  <Soccer />
-  <Contact />
-</Base>
+<Notebook>
+  <header class="title">
+    <h1>{site.name}</h1>
+    <p class="title__role">{show(site.tagline)}</p>
+    <nav class="title__nav" aria-label="Sections">
+      <a href="#about">about</a>
+      <a href="#work">work</a>
+      <a href="#projects">projects</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <p class="title__hint">
+      scroll to kick <span aria-hidden="true">↓</span>
+    </p>
+  </header>
+
+  <StageKick />
+
+  <Gap seed={41} id="about">
+    <h2>About</h2>
+    <p class="label">Proposition.</p>
+    <p class="big">{proposition}</p>
+    {proof.map((line) => (
+      <p>
+        <span class="label">Proof.</span> {line} <span class="qed">Q.E.D.</span>
+      </p>
+    ))}
+    <ul>
+      {site.loves.map((l) => (
+        <li>
+          <strong>{l.topic}</strong> · {l.why}
+        </li>
+      ))}
+    </ul>
+  </Gap>
+
+  <StageDescent />
+  <StageTree />
+
+  <Gap seed={43} id="work">
+    <h2>Work</h2>
+    <p>{show(site.work.summary)}</p>
+    <h3>Scheduling problems I solve</h3>
+    <ol class="problems">
+      {site.work.problems.map((x) => (
+        <li>
+          <strong>{x.problem}</strong>
+          <span>{x.answer}</span>
+        </li>
+      ))}
+    </ol>
+    <h3>Questions I keep asking</h3>
+    <ul class="questions">
+      {site.work.questions.map((q) => (
+        <li>{q}</li>
+      ))}
+    </ul>
+    <p class="tags">
+      {site.work.focus.map((f) => (
+        <span>{f}</span>
+      ))}
+    </p>
+  </Gap>
+
+  <Gap seed={45} id="projects">
+    <h2>Projects</h2>
+    <p class="label">five boxes. open any.</p>
+    <ul class="boxes">
+      {repos.map((r) => (
+        <li>
+          {r.private ? <strong>{r.title}</strong> : <a href={r.live ?? r.url}>{r.title}</a>}
+          <span>{r.blurb}</span>
+          <small>
+            {[
+              r.language,
+              r.private ? 'private repo' : null,
+              r.stars ? `${r.stars} ★` : null,
+              r.pushedAt ? `pushed ${ago(r.pushedAt, fetchedAt)}` : null,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+            {r.live && !r.private && (
+              <Fragment>
+                {' · '}
+                <a href={r.url}>code</a>
+              </Fragment>
+            )}
+          </small>
+        </li>
+      ))}
+    </ul>
+  </Gap>
+
+  <StageSlits />
+
+  <Gap seed={47} id="terrace">
+    <h2>{soccer.title}</h2>
+    <svg class="scarf" viewBox="0 0 220 34" role="img" aria-label="A red and white scarf">
+      {Array.from({ length: 10 }, (_, i) => (
+        <rect x={10 + i * 20} y="6" width="20" height="20" fill={i % 2 ? '#FFFDF6' : '#D9534A'} />
+      ))}
+      <path d="M10,6 h200 v20 h-200 Z" fill="url(#streak)"></path>
+      <path
+        d="M10,6 h200 v20 h-200 Z"
+        fill="none"
+        stroke="#3B2F2A"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      ></path>
+      <path
+        d="M10,8 l-8,2 M10,13 l-9,1 M10,18 l-8,2 M10,23 l-9,2 M210,8 l8,2 M210,13 l9,1 M210,18 l8,2 M210,23 l9,2"
+        fill="none"
+        stroke="#3B2F2A"
+        stroke-width="1.4"
+        stroke-linecap="round"
+      ></path>
+    </svg>
+    <p class="big">{soccer.line}</p>
+    <p>{show(soccer.body)}</p>
+    <p class="label">{soccer.note}</p>
+  </Gap>
+
+  <StageUniverse />
+  <StageEnd />
+
+  <section class="contact" id="contact">
+    <div class="slip">
+      <h2>Contact</h2>
+      <p class="big">Write to me.</p>
+      <p>I read everything. I answer most of it.</p>
+      {site.email && (
+        <p>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </p>
+      )}
+      {site.resume.enabled && (
+        <p>
+          <a href={site.resume.path}>Résumé (PDF)</a>
+        </p>
+      )}
+      <p class="socials">
+        {site.socials.map((s) => (
+          <Social platform={s.platform} url={s.url} />
+        ))}
+      </p>
+    </div>
+    <footer class="colophon">
+      <p>
+        One red line, drawn when the site is built. No images, no trackers. © {year} {site.name} ·{' '}
+        {site.location}
+      </p>
+      <p>
+        <a href="#main">kick it again ↑</a>
+      </p>
+    </footer>
+  </section>
+
+  <Ball />
+</Notebook>
+
+<script>
+  import { mountThread } from '../scripts/thread';
+  mountThread();
+</script>
+
+<style>
+  .title {
+    position: relative;
+    z-index: 1;
+    padding: clamp(14px, 3svh, 28px) 5% 0;
+    /* the title sits in the empty sky of the first drawing */
+    margin-bottom: -20%;
+  }
+  .title h1 {
+    margin: 0;
+    font-family: var(--font-script);
+    font-size: clamp(2.6rem, 11vw, 4.6rem);
+    font-weight: 700;
+    line-height: 0.95;
+    rotate: -2deg;
+    transform-origin: left center;
+  }
+  .title__role {
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+  }
+  .title__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin-top: 2px;
+    font-family: var(--font-script);
+    font-size: 1.45rem;
+  }
+  .title__hint {
+    margin: 2px 0 0;
+    font-family: var(--font-script);
+    font-size: 1.5rem;
+    color: var(--ink-soft);
+  }
+  .contact {
+    padding: 6px 0 0;
+  }
+  .contact .slip {
+    width: 92%;
+  }
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .colophon {
+    padding: 26px 5% 0;
+    font-size: 1rem;
+    color: var(--ink-soft);
+  }
+  .colophon p {
+    margin: 0 0 6px;
+  }
+</style>

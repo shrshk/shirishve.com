@@ -1,0 +1,142 @@
+---
+// Scene 5: physics. The ball becomes a photon: the thread turns into a wave, meets two
+// slits, lands on a screen of fringes, then follows a world line inside a light cone.
+import { MARGIN_X, STAGE_W, arc, cubic, hand, route, stroke, type Pt } from '../../lib/doodle';
+
+const H = 900;
+const WALL = 250;
+const SLITS = [250, 350] as const;
+const SCREEN = 480;
+const APEX: Pt = [300, 580];
+
+/** A wave from a to b: a sine across the line of travel, quiet at both ends. */
+function wave(a: Pt, b: Pt, cycles: number, amp: number, n = 90): Pt[] {
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const len = Math.hypot(dx, dy);
+  const nx = -dy / len;
+  const ny = dx / len;
+  return Array.from({ length: n + 1 }, (_, i) => {
+    const t = i / n;
+    const s = Math.sin(t * cycles * 2 * Math.PI) * amp * Math.sin(t * Math.PI) ** 0.5;
+    return [a[0] + dx * t + nx * s, a[1] + dy * t + ny * s] as const;
+  });
+}
+
+const SOURCE: Pt = [300, 96];
+const thread = route(
+  {
+    arrive: cubic([MARGIN_X, 0], [MARGIN_X, 50], [330, 30], SOURCE, 24),
+    toSlit: wave(SOURCE, [SLITS[0], WALL], 4, 13),
+    toScreen: wave([SLITS[0], WALL], [300, SCREEN], 5, 11),
+    toApex: [
+      [300, SCREEN],
+      [APEX[0], APEX[1]],
+    ],
+    exit: cubic(APEX, [300, 670], [MARGIN_X, 810], [MARGIN_X, H], 30),
+  },
+  71,
+  0.5,
+);
+// the path the photon also took
+const ghost = [
+  hand(wave(SOURCE, [SLITS[1], WALL], 4, 13), 72, 0.5),
+  hand(wave([SLITS[1], WALL], [300, SCREEN], 5, 11), 73, 0.5),
+].join(' ');
+
+const wall = [
+  stroke([50, WALL], [SLITS[0] - 22, WALL], 74),
+  stroke([SLITS[0] + 22, WALL], [SLITS[1] - 22, WALL], 75),
+  stroke([SLITS[1] + 22, WALL], [550, WALL], 76),
+];
+const fronts = SLITS.flatMap((x, i) =>
+  [46, 92, 138].map((r, j) => hand(arc(x, WALL, r, Math.PI * 1.08, Math.PI * 1.92, 30), 80 + i * 3 + j, 0.8)),
+);
+// fringes: bright where the two paths agree
+const fringes = Array.from({ length: 9 }, (_, i) => {
+  const k = i - 4;
+  return { x: 300 + k * 52, strength: Math.exp(-(k * k) / 7) };
+});
+const cone = [
+  stroke(APEX, [APEX[0] - 290, APEX[1] + 290], 91),
+  stroke(APEX, [APEX[0] + 250, APEX[1] + 250], 92),
+  stroke(APEX, [APEX[0] - 46, APEX[1] - 46], 93),
+  stroke(APEX, [APEX[0] + 46, APEX[1] - 46], 94),
+];
+---
+
+<svg class="stage" viewBox={`0 0 ${STAGE_W} ${H}`} data-segment role="img" aria-labelledby="slits-title">
+  <title id="slits-title">
+    The red line becomes a wave. It goes through one of two slits while a dashed copy goes through the other,
+    and both meet on a screen of light and dark bands. Below, the line stays inside a light cone.
+  </title>
+
+  <text x="40" y="70" font-size="40" font-weight="700" class="red">
+    which slit?
+  </text>
+  <g class="cue" data-at={(thread.at.arrive + 0.03).toFixed(3)}>
+    <text x="346" y="150" font-size="25" class="blue">
+      the ball is a photon now.
+    </text>
+    <text x="96" y="176" font-size="34" font-weight="700">
+      E = hν
+    </text>
+  </g>
+
+  {wall.map((w) => (
+    <path class="pencil" d={w} style="stroke-width:5" />
+  ))}
+  <g class="cue" data-at={thread.at.toSlit.toFixed(3)}>
+    {fronts.map((f) => (
+      <path class="pencil pencil--light pencil--blue" d={f} />
+    ))}
+    <path class="pencil pencil--blue" d={ghost} stroke-dasharray="3 6" style="stroke-width:1.8"></path>
+    <text x="418" y="232" font-size="30" font-weight="700">
+      both.
+    </text>
+  </g>
+
+  <g class="cue" data-at={(thread.at.toScreen - 0.03).toFixed(3)}>
+    {fringes.map((f) => (
+      <rect
+        x={f.x - 15}
+        y={SCREEN - 9}
+        width="30"
+        height="18"
+        rx="4"
+        fill="#3E3F9E"
+        opacity={(0.12 + 0.75 * f.strength).toFixed(2)}
+      />
+    ))}
+    <text x="44" y={SCREEN - 20} font-size="23" class="blue">
+      where they agree, light.
+    </text>
+  </g>
+  <path class="pencil" d={stroke([40, SCREEN + 12], [560, SCREEN + 12], 77)}></path>
+
+  {cone.map((c) => (
+    <path class="pencil" d={c} />
+  ))}
+  <g class="cue" data-at={thread.at.toApex.toFixed(3)}>
+    <circle cx={APEX[0]} cy={APEX[1]} r="5" fill="#3B2F2A"></circle>
+    <text x={APEX[0] + 62} y={APEX[1] + 6} font-size="26" font-weight="700">
+      here, now
+    </text>
+    <text x="252" y="540" font-size="22" class="blue">
+      past
+    </text>
+  </g>
+  <g class="cue" data-at={(thread.at.toApex + 0.08).toFixed(3)}>
+    <text x="118" y="746" font-size="25" class="blue" transform="rotate(-45 118 746)">
+      ds² = 0
+    </text>
+    <text x="150" y="806" font-size="25" class="blue">
+      the future. stay inside the lines.
+    </text>
+    <text x="62" y="868" font-size="23" class="blue">
+      nothing outruns light. not even this line.
+    </text>
+  </g>
+
+  <path class="thread" data-thread d={thread.d} pathLength="1"></path>
+</svg>

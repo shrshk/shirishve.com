@@ -62,7 +62,7 @@ const im = stroke([CX, CY - R - 30], [CX, CY + R + 30], 17, 1);
   <text x="562" y="456" font-size="27">
     θ
   </text>
-  <path class="pencil" d={curve} stroke-width="2.4"></path>
+  <path class="pencil" d={curve} style="stroke-width:2.4"></path>
 
   {stepPts.map(([x, y], i) => (
     <circle class="cue" data-at={(0.04 + i * 0.058).toFixed(3)} cx={x} cy={y} r="4.5" fill="#3E3F9E" />

@@ -1,14 +1,14 @@
 # CLAUDE.md
 
-Personal portfolio for shirishve.com: a static Astro site painted in a Van Gogh style.
-`PLAN.md` is the full brief. It is kept out of git (it is a private planning doc); read it before any phase of work if it is present.
+Personal portfolio for shirishve.com: a static Astro site drawn as one line in a notebook, in the
+style of doodle games (crayon doodles on paper).
 
 ## Stack
 
 - Astro 7 with TypeScript (strict), static output. No UI framework, no UI kit.
-- Plain CSS with custom properties. Tokens live in `src/styles/tokens.css`.
+- Plain CSS with custom properties in `src/styles/doodle.css`.
 - Copy lives in `src/content/*.yaml`, read and validated by `src/lib/content.ts` (js-yaml + zod).
-- Fonts are self-hosted Latin WOFF2 files in `public/fonts`.
+- Fonts are self-hosted Latin WOFF2 files in `public/fonts`: Caveat (titles, labels), Patrick Hand (body).
 - Icons come from the `simple-icons` package and are inlined at build time.
 - Hosting: GitHub Pages, deployed by `.github/workflows/deploy.yml` on every push to `main` and once a day. DNS for shirishve.com is at Cloudflare.
 - Node 24. npm.
@@ -25,46 +25,48 @@ Personal portfolio for shirishve.com: a static Astro site painted in a Van Gogh 
 | `npm run format` / `format:check` | Prettier                                                  |
 | `npm run verify`                  | All checks plus a build. Run it before every commit.      |
 
-## Design tokens
+`GITHUB_OFFLINE=1` builds from `src/data/github.json` without the network.
 
-| Token       | Hex     | Role                                     |
-| ----------- | ------- | ---------------------------------------- |
-| `night`     | #101B3B | Hero sky, footer, dark surfaces          |
-| `cobalt`    | #1F4E8C | Swirl strokes, links on light surfaces   |
-| `sky`       | #4F86C6 | Lighter swirl strokes, hover states      |
-| `chrome`    | #F2C230 | Stars, headings on dark, primary buttons |
-| `ochre`     | #C98A1B | Wheat, borders, frame edges              |
-| `cypress`   | #23402B | Deep green shapes and dividers           |
-| `blossom`   | #7DBDB4 | Tags, secondary accents                  |
-| `canvas`    | #F3E9CF | Light surfaces and body background       |
-| `vermilion` | #E0201B | Arsenal accent: one use per screen       |
+## How the page works
 
-`src/lib/palette.ts` is the source of truth for surfaces and their stroke colours.
-`tokens.css` mirrors it. Change both together, then run `npm run check:contrast`.
+The page is a chain of segments in one 760 px column: drawings (`Stage*.astro`) and notes (`Gap.astro`).
+Each segment holds one piece of the red thread (`data-thread`). `src/scripts/thread.ts` draws each piece
+as the page scrolls and moves the ball along it. Elements with `data-at="0.4"` appear when the ball is
+40% along their segment's piece.
 
-Type: Fraunces (display), Newsreader (body), Caveat (margin notes), JetBrains Mono (code and stats).
+- Every stage is 600 units wide. The thread enters and leaves at x = 540 (`MARGIN_X`), so it runs down
+  the right margin beside the notes. Two stages with no note between them may meet at another x.
+- Build a thread with `route({ name: points, ... })` from `src/lib/doodle.ts`. It returns the path and
+  how far along each named piece ends, for `data-at`.
+- Draw every line with `hand()` or `stroke()`. The wobble is in the points.
 
 ## Design bar
 
-It must read as a painting, not a website with a blue and yellow theme.
+It must read as a notebook page, not a website with a paper background.
 
-- Brushwork, texture and ragged edges everywhere.
-- No stock UI components, no straight dividers, no default (blurred) shadows.
-- Rough edges go on a background layer (`.paint::before`), never on the text itself.
-- Vermilion is one stroke per section until the Terrace section.
-- Margin notes are dry and precise. No exclamation marks.
+- One thread, never lifted. A new scene continues the line from where the last one ended.
+- Hand-written labels are dry and short. No exclamation marks.
+- Colours: `src/lib/palette.ts` is the source of truth and `doodle.css` mirrors it. Change both, then
+  run `npm run check:contrast`.
+- The `.pencil` class sets stroke and stroke-width in CSS. A `stroke` attribute on the same element
+  loses to it: use `style="stroke:..."`.
+
+## Motion rules
+
+- No SVG filters on anything that moves or sits under something that moves. Phones repaint a filter
+  whenever its area changes, and that flickers. Today the page has no filters at all.
+- Animate only `transform`, `opacity` and `stroke-dashoffset`.
+- With `prefers-reduced-motion`, or without the script, the whole thread is already drawn.
 
 ## Guardrails
 
-- **Original artwork only by default.** Evoke Van Gogh through technique. If a real painting is ever used, take it only from a museum open-access download marked public domain or CC0, and record the source URL in `CREDITS.md`.
-- **No Arsenal crest, wordmark, kit or sponsor logos.** The club is shown through red and white, original illustration and words.
-- **Brand icons stay unmodified inside their seals.** If a platform is missing from Simple Icons, draw a plain lettered seal instead of copying a logo from elsewhere.
-- **Nothing confidential.** No employer code, client names or internal metrics; Work copy uses only what Shirish clears.
-- **Performance budget.** Under 200 KB of JavaScript and under 1 MB total on first load; fonts subset and preloaded; canvas capped by device pixel ratio.
-- **Accessibility.** AA contrast, visible focus rings in `chrome`, alt text on every painted scene, full keyboard navigation, reduced-motion support.
-
-## Process
-
-- `main` deploys. Work on a branch and merge when `npm run verify` passes.
-- The page is public. Nothing goes into `src/content/` that has not been cleared: no employer code, client names or internal numbers.
-- Placeholders in `src/content/` carry the word `PLACEHOLDER`. Do not invent real facts for them.
+- **Original drawings only.** No photographs and no images of real people. The doodle of the owner is
+  drawn in `Me.astro`.
+- **The club is never named.** No crest, wordmark, kit or sponsor logos. It shows as the red thread and
+  a red and white scarf.
+- **Nothing from work that is confidential:** no employer, product, client, team size or figures.
+- Copy marked `PLACEHOLDER:` in the YAML is not approved yet. `show()` strips the marker.
+- Commit as `Shirish Veerabattini <shirish101k@gmail.com>`.
+- **Brand icons stay unmodified.** A platform that Simple Icons lacks gets plain letters, not a copied logo.
+- **Accessibility.** AA contrast, visible focus rings, a `<title>` on every drawing, reduced-motion support.
+- **The page is public.** Placeholders in `src/content/` carry the word `PLACEHOLDER`. Do not invent real facts for them.

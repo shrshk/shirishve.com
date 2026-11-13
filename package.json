@@ -15,7 +15,6 @@
     "format:check": "prettier --check .",
     "verify": "npm run format:check && npm run check && npm run check:contrast && npm run build",
     "check:contrast": "node scripts/check-contrast.ts",
-    "portrait": "node scripts/paint-portrait.mjs",
     "head": "node scripts/cut-head.mjs"
   },
   "dependencies": {
