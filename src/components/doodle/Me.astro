@@ -138,13 +138,13 @@ const { at } = Astro.props;
       stroke-linecap="round"
     ></path>
     <g class="me__eyes">
+      <!-- open eyes, lifted from below by the smile -->
       <path
-        d="M37.2,34.4 Q41,29.4 44.8,34.4 M55.2,34.4 Q59,29.4 62.8,34.4"
-        fill="none"
-        stroke={HAIR}
-        stroke-width="2.1"
-        stroke-linecap="round"
+        d="M37.6,34.6 A3.5,3.7 0 1 1 44.4,34.6 Q41,32.2 37.6,34.6 Z M55.6,34.6 A3.5,3.7 0 1 1 62.4,34.6 Q59,32.2 55.6,34.6 Z"
+        fill={HAIR}
       ></path>
+      <circle cx="42.2" cy="31.4" r="1.1" fill="#fff"></circle>
+      <circle cx="60.2" cy="31.4" r="1.1" fill="#fff"></circle>
     </g>
   </g>
 </g>
