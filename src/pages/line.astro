@@ -1,0 +1,85 @@
+---
+// "One line": the notebook version of the site. A prototype, not linked from the home page.
+import Notebook from '../layouts/Notebook.astro';
+import Ball from '../components/doodle/Ball.astro';
+import Gap from '../components/doodle/Gap.astro';
+import StageDescent from '../components/doodle/StageDescent.astro';
+import StageKick from '../components/doodle/StageKick.astro';
+import { show, site } from '../lib/content';
+
+const [proposition, ...proof] = site.bio.map(show);
+---
+
+<Notebook title="One line" noindex>
+  <header class="title">
+    <h1>{site.name}</h1>
+    <p class="title__role">{show(site.tagline)}</p>
+    <p class="title__hint">
+      scroll to kick <span aria-hidden="true">↓</span>
+    </p>
+  </header>
+
+  <StageKick />
+
+  <Gap seed={41}>
+    <h2>About</h2>
+    <p class="label">Proposition.</p>
+    <p class="big">{proposition}</p>
+    {proof.map((line) => (
+      <p>
+        <span class="label">Proof.</span> {line} ∎
+      </p>
+    ))}
+    <ul>
+      {site.loves.map((l) => (
+        <li>
+          <strong>{l.topic}</strong> · {l.why}
+        </li>
+      ))}
+    </ul>
+  </Gap>
+
+  <StageDescent />
+
+  <Gap seed={43}>
+    <h2>Next page</h2>
+    <p>Trees, queues, five boxes, two slits, and the whole universe in one dot.</p>
+    <p class="label">not drawn yet.</p>
+  </Gap>
+
+  <Ball />
+</Notebook>
+
+<script>
+  import { mountThread } from '../scripts/thread';
+  mountThread();
+</script>
+
+<style>
+  .title {
+    position: relative;
+    z-index: 1;
+    padding: clamp(14px, 3svh, 28px) 5% 0;
+    /* the title sits in the empty sky of the first drawing */
+    margin-bottom: -20%;
+  }
+  .title h1 {
+    margin: 0;
+    font-family: var(--font-script);
+    font-size: clamp(2.6rem, 11vw, 4.6rem);
+    font-weight: 700;
+    line-height: 0.95;
+    rotate: -2deg;
+    transform-origin: left center;
+  }
+  .title__role {
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+  }
+  .title__hint {
+    margin: 2px 0 0;
+    font-family: var(--font-script);
+    font-size: 1.5rem;
+    color: var(--crayon-blue);
+  }
+</style>

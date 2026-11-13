@@ -1,0 +1,140 @@
+---
+// Scene 2: maths. The ball lands on a loss curve and steps down it by gradient descent.
+// Then the thread traces Euler's identity: start at 1, turn by π, add 1, arrive at 0.
+import { MARGIN_X, STAGE_W, arc, cubic, hand, join, plot, stroke, type Pt } from '../../lib/doodle';
+
+const H = 780;
+const MIN_X = 290;
+const MIN_Y = 400;
+const K = 0.00548;
+// A bowl: high at both sides, lowest at MIN_X. Screen y grows downward.
+const bowl = (x: number) => MIN_Y - K * (x - MIN_X) ** 2;
+
+// Each step overshoots less: a learning rate that is too high, then decays.
+const steps = [520, 120, 420, 200, 340, MIN_X];
+const stepPts: Pt[] = steps.map((x) => [x, bowl(x)] as const);
+
+const CX = 300;
+const CY = 600;
+const R = 84;
+
+const thread = hand(
+  join(
+    cubic([MARGIN_X, 0], [MARGIN_X, 50], [530, 80], stepPts[0]!, 16),
+    stepPts,
+    cubic([MIN_X, MIN_Y], [286, 470], [CX + R + 14, 500], [CX + R, CY], 30),
+    arc(CX, CY, R, 0, Math.PI, 60),
+    [
+      [CX - R, CY],
+      [CX, CY],
+    ],
+    cubic([CX, CY], [CX, 700], [MARGIN_X, 680], [MARGIN_X, H], 30),
+  ),
+  34,
+  0.8,
+);
+
+const curve = hand(plot(bowl, 62, 532, 70), 9, 1.2);
+const axisY = stroke([50, 96], [50, 440], 4, 1.2);
+const axisX = stroke([40, 430], [556, 430], 6, 1.4);
+const circle = hand(arc(CX, CY, R, 0, 2 * Math.PI, 90), 13, 1);
+const re = stroke([CX - R - 34, CY], [CX + R + 34, CY], 15, 1);
+const im = stroke([CX, CY - R - 30], [CX, CY + R + 30], 17, 1);
+---
+
+<svg class="stage" viewBox={`0 0 ${STAGE_W} ${H}`} data-segment role="img" aria-labelledby="descent-title">
+  <title id="descent-title">
+    The ball lands on a curve labelled loss and steps down it, each step smaller, until it rests at the lowest
+    point. The red line then goes half way round a unit circle from 1 to minus 1 and back along the axis to 0:
+    e to the i pi, plus 1, equals 0.
+  </title>
+
+  <text x="64" y="64" font-size="40" font-weight="700" class="red">
+    find the minimum
+  </text>
+
+  <path class="pencil" d={axisY}></path>
+  <path class="pencil" d={axisX}></path>
+  <path class="pencil" d="M44,106 L50,94 L56,106 M546,424 L558,430 L546,436"></path>
+  <text x="20" y="92" font-size="25">
+    loss
+  </text>
+  <text x="562" y="456" font-size="27">
+    θ
+  </text>
+  <path class="pencil" d={curve} stroke-width="2.4"></path>
+
+  {stepPts.map(([x, y], i) => (
+    <circle class="cue" data-at={(0.04 + i * 0.058).toFixed(3)} cx={x} cy={y} r="4.5" fill="#3E3F9E" />
+  ))}
+  <g class="cue" data-at="0.1">
+    <text x="246" y="240" font-size="26" class="blue">
+      learning rate: too high
+    </text>
+  </g>
+  <g class="cue" data-at="0.2">
+    <text x="438" y="322" font-size="26" class="blue">
+      smaller
+    </text>
+  </g>
+  <g class="cue" data-at="0.3">
+    <text x="96" y="378" font-size="26" class="blue">
+      smaller
+    </text>
+  </g>
+  <g class="cue" data-at="0.36">
+    <text x="318" y="418" font-size="28" font-weight="700">
+      ∇ = 0
+    </text>
+  </g>
+
+  <g class="cue" data-at="0.4">
+    <path class="pencil pencil--light" d={circle} stroke-dasharray="4 7"></path>
+    <path class="pencil pencil--light" d={re}></path>
+    <path class="pencil pencil--light" d={im}></path>
+    <text x={CX + R + 40} y={CY + 8} font-size="22">
+      Re
+    </text>
+    <text x={CX - 10} y={CY - R - 36} font-size="22">
+      Im
+    </text>
+  </g>
+  <g class="cue" data-at="0.5">
+    <text x={CX + R + 8} y={CY + 30} font-size="28" font-weight="700">
+      1
+    </text>
+    <text x="34" y="548" font-size="25" class="blue">
+      start at 1.
+    </text>
+  </g>
+  <g class="cue" data-at="0.62">
+    <text x={CX - 44} y={CY - R - 8} font-size="28" class="blue">
+      π
+    </text>
+    <text x="34" y="580" font-size="25" class="blue">
+      turn by π.
+    </text>
+  </g>
+  <g class="cue" data-at="0.74">
+    <text x={CX - R - 36} y={CY + 30} font-size="28" font-weight="700">
+      −1
+    </text>
+    <text x="34" y="612" font-size="25" class="blue">
+      add 1.
+    </text>
+  </g>
+  <g class="cue" data-at="0.8">
+    <text x={CX + 8} y={CY + 28} font-size="28" font-weight="700">
+      0
+    </text>
+    <text x="34" y="700" font-size="42" font-weight="700">
+      e
+      <tspan dy="-16" font-size="27">
+        iπ
+      </tspan>
+      <tspan dy="16"> + 1 = 0</tspan>
+    </text>
+  </g>
+
+  <path class="thread" data-thread d={thread} pathLength="1"></path>
+</svg>

@@ -1,0 +1,24 @@
+---
+// A crayon-filled shape: flat fill, paper streaks, pencil outline.
+interface Props {
+  d: string;
+  fill: string;
+  stroke: string;
+  width?: number;
+  dark?: boolean;
+}
+const { d, fill, stroke, width = 2, dark = false } = Astro.props;
+---
+
+<g>
+  <path d={d} fill={fill}></path>
+  <path d={d} fill={dark ? 'url(#streak-dark)' : 'url(#streak)'}></path>
+  <path
+    d={d}
+    fill="none"
+    stroke={stroke}
+    stroke-width={width}
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  ></path>
+</g>

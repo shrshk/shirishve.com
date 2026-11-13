@@ -1,0 +1,188 @@
+---
+// The owner of the page as a doodle: quiff, beard, yellow puffer jacket.
+// A 100 x 100 box with the feet near (50, 96), as the characters in doodle games.
+// The rig is four groups that turn about a joint: two arms, two legs.
+import Crayon from './Crayon.astro';
+
+const SKIN = '#C98E63';
+const SKIN_LINE = '#8A5A35';
+const HAIR = '#2B211D';
+const JACKET = '#E9C24A';
+const JACKET_LINE = '#A67C1F';
+const TROUSER = '#4A4640';
+
+interface Props {
+  /** How far along the stage's thread the kick happens (0 to 1). */
+  at?: number;
+}
+const { at } = Astro.props;
+---
+
+<g class:list={['me', at !== undefined && 'cue']} data-at={at}>
+  <path
+    d="M34,98 l8,-2 M44,99 l9,-2.4 M55,98.5 l8,-2"
+    stroke="#9A8F80"
+    stroke-width="1.1"
+    stroke-linecap="round"
+    opacity="0.7"
+  ></path>
+
+  <g class="me__leg me__leg--stand">
+    <Crayon
+      d="M40,77 C39,83 39.5,89 40.5,93 L47,93 C47.5,89 47.5,83 47,77 Z"
+      fill={TROUSER}
+      stroke={HAIR}
+      width={1.4}
+      dark
+    />
+    <ellipse cx="42.5" cy="94.5" rx="6" ry="3" fill="#F4F1EA" stroke={HAIR} stroke-width="1.4"></ellipse>
+  </g>
+  <g class="me__leg me__leg--kick">
+    <Crayon
+      d="M53,77 C52.5,83 53,89 53.5,93 L60,93 C61,89 60.5,83 60,77 Z"
+      fill={TROUSER}
+      stroke={HAIR}
+      width={1.4}
+      dark
+    />
+    <ellipse cx="58.5" cy="94.5" rx="6" ry="3" fill="#F4F1EA" stroke={HAIR} stroke-width="1.4"></ellipse>
+  </g>
+
+  <g class="me__arm me__arm--back">
+    <Crayon
+      d="M33,60 C27,62 23,67 22,72 C24,75 28,75 30,73 C31,69 34,66 37,64 Z"
+      fill={JACKET}
+      stroke={JACKET_LINE}
+      width={1.6}
+    />
+    <circle cx="25.5" cy="75" r="3.6" fill={SKIN} stroke={SKIN_LINE} stroke-width="1.3"></circle>
+  </g>
+
+  <!-- the jacket, open over a mustard shirt -->
+  <Crayon
+    d="M32,58 C27,65 28,75 31,80 C40,83 60,83 69,80 C72,75 73,65 68,58 C61,54 39,54 32,58 Z"
+    fill={JACKET}
+    stroke={JACKET_LINE}
+  />
+  <path d="M45,56 L44,81.6 L56,81.6 L55,56 Z" fill="#C9A227"></path>
+  <path
+    d="M45,56 L44,81.6 M55,56 L56,81.6"
+    fill="none"
+    stroke={HAIR}
+    stroke-width="2.2"
+    stroke-linecap="round"
+  ></path>
+  <path
+    d="M30,64.5 Q37,66.5 43,64.5 M29.5,72 Q37,74 43.5,72 M57,64.5 Q63,66.5 70,64.5 M56.5,72 Q63,74 70.5,72"
+    fill="none"
+    stroke={JACKET_LINE}
+    stroke-width="1"
+    stroke-linecap="round"
+    opacity="0.8"
+  ></path>
+  <circle cx="50" cy="63" r="0.9" fill={SKIN_LINE}></circle>
+  <circle cx="50" cy="71" r="0.9" fill={SKIN_LINE}></circle>
+
+  <g class="me__arm me__arm--front">
+    <Crayon
+      d="M67,60 C73,62 77,67 78,72 C76,75 72,75 70,73 C69,69 66,66 63,64 Z"
+      fill={JACKET}
+      stroke={JACKET_LINE}
+      width={1.6}
+    />
+    <circle cx="74.5" cy="75" r="3.6" fill={SKIN} stroke={SKIN_LINE} stroke-width="1.3"></circle>
+  </g>
+
+  <g class="me__head">
+    <ellipse cx="28.5" cy="36" rx="3" ry="4.2" fill={SKIN} stroke={SKIN_LINE} stroke-width="1.3"></ellipse>
+    <ellipse cx="71.5" cy="36" rx="3" ry="4.2" fill={SKIN} stroke={SKIN_LINE} stroke-width="1.3"></ellipse>
+    <path
+      d="M50,11 C63,11 72,20 72,34 C72,48 63,57 50,57 C37,57 28,48 28,34 C28,20 37,11 50,11 Z"
+      fill={SKIN}
+      stroke={SKIN_LINE}
+      stroke-width="2"
+    ></path>
+    <!-- beard, with the smile cut into it -->
+    <path
+      d="M28.4,36 C29,50 38,57.8 50,57.8 C62,57.8 71,50 71.6,36 C70,43 65,45 59,43.6 C55,42.4 45,42.4 41,43.6 C35,45 30,43 28.4,36 Z"
+      fill={HAIR}
+    ></path>
+    <path
+      d="M28.4,36 C29,50 38,57.8 50,57.8 C62,57.8 71,50 71.6,36 C70,43 65,45 59,43.6 C55,42.4 45,42.4 41,43.6 C35,45 30,43 28.4,36 Z"
+      fill="url(#streak-dark)"
+    ></path>
+    <path
+      d="M42.5,46.5 Q50,54 57.5,46.5 Q50,48 42.5,46.5 Z"
+      fill="#FFFDF6"
+      stroke={HAIR}
+      stroke-width="1"
+    ></path>
+    <!-- the quiff -->
+    <path
+      d="M28.4,29 C28,20 32,13.5 38,10.5 L40.5,5.5 L44.5,9 L48.5,2.5 L52.5,8 L57.5,2.5 L60,8 L66,5.5 L65.5,12 C70,16 72,22 71.6,29 C67.5,21.5 60,17 50,17 C40,17 32.5,21.5 28.4,29 Z"
+      fill={HAIR}
+    ></path>
+    <path
+      d="M28.4,29 C28,20 32,13.5 38,10.5 L40.5,5.5 L44.5,9 L48.5,2.5 L52.5,8 L57.5,2.5 L60,8 L66,5.5 L65.5,12 C70,16 72,22 71.6,29 C67.5,21.5 60,17 50,17 C40,17 32.5,21.5 28.4,29 Z"
+      fill="url(#streak-dark)"
+    ></path>
+    <path
+      d="M36,26.5 Q40,24.5 44,26 M56,26 Q60,24.5 64,26.5"
+      fill="none"
+      stroke={HAIR}
+      stroke-width="1.6"
+      stroke-linecap="round"
+    ></path>
+    <ellipse cx="34.5" cy="38.5" rx="3.6" ry="2.2" fill="#F28B9A" opacity="0.5"></ellipse>
+    <ellipse cx="65.5" cy="38.5" rx="3.6" ry="2.2" fill="#F28B9A" opacity="0.5"></ellipse>
+    <g class="me__eyes">
+      <circle cx="40.5" cy="33.5" r="3" fill={HAIR}></circle>
+      <circle cx="59.5" cy="33.5" r="3" fill={HAIR}></circle>
+      <circle cx="41.5" cy="32.4" r="1" fill="#fff"></circle>
+      <circle cx="60.5" cy="32.4" r="1" fill="#fff"></circle>
+    </g>
+  </g>
+</g>
+
+<style is:global>
+  /* Each limb turns about its joint. Only transforms change, and nothing here is
+     inside an SVG filter, so a phone does not repaint the drawing. */
+  .me__leg,
+  .me__arm,
+  .me__head {
+    transform-box: view-box;
+    transition: transform 240ms cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .me__leg--kick {
+    transform-origin: 56.5px 78px;
+    transform: rotate(9deg);
+  }
+  .me__leg--stand {
+    transform-origin: 43.5px 78px;
+  }
+  .me__arm--back {
+    transform-origin: 34px 61px;
+  }
+  .me__arm--front {
+    transform-origin: 66px 61px;
+  }
+  .me__head {
+    transform-origin: 50px 56px;
+  }
+  /* the kick: leg through, arms out for balance, head up to watch the ball */
+  .me.on .me__leg--kick {
+    transform: rotate(-58deg);
+  }
+  .me.on .me__arm--back {
+    transform: rotate(48deg);
+  }
+  .me.on .me__arm--front {
+    transform: rotate(-62deg);
+  }
+  .me.on .me__head {
+    transform: rotate(7deg);
+  }
+  .thread-live .me.cue {
+    opacity: 1;
+  }
+</style>

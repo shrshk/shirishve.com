@@ -1,0 +1,108 @@
+---
+// Scene 1: the kick. The thread is the path of the ball: up, down, one bounce, off the edge.
+import Ball from './Ball.astro';
+import Me from './Me.astro';
+import { MARGIN_X, STAGE_W, arc, cubic, hand, join, plot, rng, stroke } from '../../lib/doodle';
+
+const H = 620;
+const GROUND = 500;
+const REST = GROUND - 12; // the centre of a ball that sits on the ground
+const EDGE = 516; // where the ground stops
+
+const flight = (x: number) => 170 + (REST - 170) * ((x - 300) / 150) ** 2;
+const bounce = (x: number) => 404 + (REST - 404) * ((x - 480) / 30) ** 2;
+const thread = hand(
+  join(
+    plot(flight, 150, 450, 60),
+    plot(bounce, 450, 510, 20),
+    cubic([510, REST], [530, REST + 4], [MARGIN_X, 545], [MARGIN_X, H], 24),
+  ),
+  21,
+  0.9,
+);
+
+const ground = stroke([24, GROUND], [EDGE, GROUND], 3, 1.6);
+const cliff = hand(
+  [
+    [EDGE, GROUND],
+    [EDGE - 3, GROUND + 22],
+    [EDGE + 2, GROUND + 46],
+  ],
+  5,
+  1.2,
+);
+const rand = rng(8);
+const tufts = Array.from({ length: 9 }, (_, i) => {
+  const x = 40 + i * 54 + rand() * 20;
+  return `M${x},${GROUND} l-3,-8 M${x + 2},${GROUND} l1,-10 M${x + 4},${GROUND} l4,-7`;
+}).join(' ');
+const hatch = Array.from({ length: 14 }, (_, i) => {
+  const x = 34 + i * 35 + rand() * 8;
+  return `M${x},${GROUND + 8} l-9,12`;
+}).join(' ');
+
+const sun = hand(arc(538, 226, 20, 0, 2 * Math.PI, 40), 19, 0.8);
+const rays = Array.from({ length: 10 }, (_, i) => {
+  const a = (i * Math.PI) / 5 + 0.2;
+  const p = (r: number) => `${(538 + r * Math.cos(a)).toFixed(1)},${(226 + r * Math.sin(a)).toFixed(1)}`;
+  return `M${p(27)}L${p(36)}`;
+}).join('');
+
+// the dashed drop from the top of the flight to the ground
+const apexDrop = `M300,${170 + 14} L300,${GROUND - 4}`;
+---
+
+<svg class="stage" viewBox={`0 0 ${STAGE_W} ${H}`} data-segment role="img" aria-labelledby="kick-title">
+  <title id="kick-title">
+    A doodle of Shirish kicks a football. A red line follows the ball in a parabola, over one bounce, and off
+    the edge of the ground.
+  </title>
+
+  <path class="pencil" d={ground}></path>
+  <path class="pencil" d={cliff}></path>
+  <path class="pencil pencil--light" d={tufts} stroke="#6FA05A"></path>
+  <path class="pencil pencil--light" d={hatch}></path>
+
+  <!-- margin doodles: a sun, a cloud, two birds -->
+  <g class="sky" aria-hidden="true">
+    <circle cx="538" cy="226" r="20" fill="#E9C24A"></circle>
+    <circle cx="538" cy="226" r="20" fill="url(#streak)"></circle>
+    <path class="pencil pencil--light" d={sun} stroke="#A67C1F"></path>
+    <path class="pencil pencil--light" d={rays} stroke="#A67C1F"></path>
+    <path
+      class="pencil pencil--light"
+      d="M440,318 q-14,0 -12,-12 q2,-11 14,-8 q5,-13 19,-8 q9,-9 19,2 q13,-1 12,12 q9,6 -2,14 Z"
+    ></path>
+    <path class="pencil pencil--light" d="M92,236 q7,-9 13,0 q7,-9 13,0 M52,290 q6,-8 11,0 q6,-8 11,0"></path>
+  </g>
+
+  <g class="cue" data-at="0.3">
+    <path class="pencil pencil--light pencil--blue" d={apexDrop} stroke-dasharray="5 7"></path>
+    <text x="312" y="158" font-size="26" class="blue">
+      v = 0 up here
+    </text>
+  </g>
+  <g class="cue" data-at="0.12">
+    <text x="172" y="300" font-size="34" font-weight="700" transform="rotate(-58 172 300)">
+      y = vt − ½gt²
+    </text>
+  </g>
+  <g class="cue" data-at="0.62">
+    <text x="316" y="424" font-size="26" class="blue">
+      g always wins
+    </text>
+  </g>
+  <g class="cue" data-at="0.86">
+    <text x="326" y="566" font-size="26" class="blue">
+      edge of the page
+    </text>
+    <path class="pencil pencil--light pencil--blue" d="M476,558 q14,3 26,-4 m-9,-4 l9,4 l-6,8"></path>
+  </g>
+
+  <path class="thread" data-thread d={thread} pathLength="1"></path>
+
+  <g transform={`translate(10 ${GROUND - 96 * 1.72}) scale(1.72)`}>
+    <Me at={0.004} />
+  </g>
+  <Ball still x={150} y={REST} />
+</svg>

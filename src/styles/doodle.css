@@ -1,0 +1,247 @@
+/* The notebook: crayon doodles on paper, as in doodle games. */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/caveat-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/caveat-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Gochi Hand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/gochi-hand-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Patrick Hand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/patrick-hand-400.woff2') format('woff2');
+}
+
+:root {
+  --paper: #f8f5ee;
+  --slip: #fbf8f0;
+  --ink: #3b2f2a;
+  --ink-soft: #6b5a4e;
+  --thread: #d9534a;
+  --crayon-red: #c2413a;
+  --crayon-blue: #3e3f9e;
+  --marker-orange: #e3a84b;
+  --pencil-yellow: #e9c24a;
+  --leaf: #6fa05a;
+  --font-hand: 'Patrick Hand', 'Gochi Hand', 'Comic Sans MS', cursive;
+  --font-script: 'Caveat', 'Gochi Hand', cursive;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* the same crumpled cream paper as the games */
+.paper {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse at center, transparent 65%, rgba(120, 100, 70, 0.07) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='p' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.009' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23ffffff' surfaceScale='1.1'%3E%3CfeDistantLight azimuth='225' elevation='80'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  background-blend-mode: normal, multiply;
+}
+
+.skip {
+  position: absolute;
+  left: -999px;
+}
+.skip:focus {
+  left: 12px;
+  top: 12px;
+  z-index: 10;
+  padding: 6px 10px;
+  background: var(--slip);
+  border: 2px solid var(--ink);
+}
+
+a {
+  color: var(--crayon-blue);
+}
+a:focus-visible {
+  outline: 2.5px dashed var(--marker-orange);
+  outline-offset: 3px;
+}
+
+/* One column, like a page torn from a notebook. Its width also follows the window
+   height, so the first drawing fits on the screen without scrolling. */
+.notebook {
+  position: relative;
+  width: min(100%, 760px, max(340px, 92svh));
+  margin: 0 auto;
+  /* room below the last drawing, so its end can reach the pen line (see thread.ts) */
+  padding: env(safe-area-inset-top) 0 42svh;
+}
+
+.stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.stage text {
+  font-family: var(--font-script);
+  fill: var(--ink);
+}
+.pencil {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pencil--light {
+  stroke-width: 1.3;
+  opacity: 0.6;
+}
+.pencil--blue {
+  stroke: var(--crayon-blue);
+}
+.stage text.blue {
+  fill: var(--crayon-blue);
+}
+.stage text.red {
+  fill: var(--crayon-red);
+}
+
+/* The thread: one red line down the whole page. */
+.thread {
+  fill: none;
+  stroke: var(--thread);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* Scroll draws the thread and brings the notes in. Without the script, or with
+   reduced motion, everything is already drawn. */
+.thread-live .cue {
+  opacity: 0;
+  transition: opacity 420ms ease;
+}
+.thread-live .cue.on {
+  opacity: 1;
+}
+.thread-live .still-ball {
+  display: none;
+}
+
+.ball {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.ball svg {
+  position: absolute;
+  overflow: visible;
+}
+
+/* A note on the page. The thread runs down the right margin beside it. */
+.gap {
+  position: relative;
+  padding: 10px 0;
+}
+.gap__thread {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.slip {
+  position: relative;
+  width: 80%;
+  margin-left: 4%;
+  padding: 18px 20px 20px;
+  background: var(--slip);
+  border: 1.8px solid var(--ink);
+  border-radius: 6px 16px 8px 14px / 14px 6px 16px 8px;
+  box-shadow: 4px 5px 0 rgba(0, 0, 0, 0.07);
+  rotate: -0.6deg;
+}
+.slip:nth-of-type(even) {
+  rotate: 0.5deg;
+}
+.slip h2 {
+  margin: 0 0 6px;
+  font-family: var(--font-script);
+  font-size: clamp(2rem, 7vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--crayon-red);
+}
+.slip p {
+  margin: 0 0 10px;
+}
+.slip p:last-child {
+  margin-bottom: 0;
+}
+.slip .big {
+  font-family: var(--font-script);
+  font-size: clamp(1.7rem, 6vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+.slip .label {
+  font-family: var(--font-script);
+  font-size: 1.35rem;
+  color: var(--crayon-blue);
+}
+.slip ul {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.slip li {
+  padding: 4px 0;
+  border-top: 1.5px dashed rgba(59, 47, 42, 0.3);
+}
+.slip li strong {
+  font-family: var(--font-script);
+  font-size: 1.45rem;
+  color: var(--crayon-blue);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .me * {
+    transition: none !important;
+  }
+}

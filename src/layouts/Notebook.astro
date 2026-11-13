@@ -1,0 +1,76 @@
+---
+import '../styles/doodle.css';
+import { site } from '../lib/content';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title, description = `${site.name}: ${site.role}.`, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.role}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+
+// Static files, no cookies, no forms, no third-party requests. Only the site's own
+// scripts, styles, fonts and images load. The paper texture is a data: image.
+const csp = [
+  "default-src 'none'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:",
+  "font-src 'self'",
+  "manifest-src 'self'",
+  "base-uri 'none'",
+  "form-action 'none'",
+].join('; ');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {import.meta.env.PROD && <meta http-equiv="Content-Security-Policy" content={csp} />}
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f8f5ee" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/caveat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/patrick-hand-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="canonical" href={canonical} />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">
+      Skip to content
+    </a>
+    <div class="paper" aria-hidden="true"></div>
+    <!-- Crayon streaks, shared by every drawing on the page. -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern
+          id="streak"
+          width="5"
+          height="5"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(-62)"
+        >
+          <line x1="0" y1="0" x2="0" y2="5" stroke="#fff" stroke-width="1.3" stroke-opacity="0.38"></line>
+        </pattern>
+        <pattern
+          id="streak-dark"
+          width="4"
+          height="4"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(-62)"
+        >
+          <line x1="0" y1="0" x2="0" y2="4" stroke="#fff" stroke-width="0.9" stroke-opacity="0.14"></line>
+        </pattern>
+      </defs>
+    </svg>
+    <main id="main" class="notebook">
+      <slot />
+    </main>
+  </body>
+</html>
