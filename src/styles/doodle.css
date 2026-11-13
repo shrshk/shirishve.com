@@ -14,13 +14,6 @@
   src: url('/fonts/caveat-latin-700-normal.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Gochi Hand';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/gochi-hand-400.woff2') format('woff2');
-}
-@font-face {
   font-family: 'Patrick Hand';
   font-style: normal;
   font-weight: 400;
@@ -39,8 +32,8 @@
   --marker-orange: #e3a84b;
   --pencil-yellow: #e9c24a;
   --leaf: #6fa05a;
-  --font-hand: 'Patrick Hand', 'Gochi Hand', 'Comic Sans MS', cursive;
-  --font-script: 'Caveat', 'Gochi Hand', cursive;
+  --font-hand: 'Patrick Hand', 'Comic Sans MS', cursive;
+  --font-script: 'Caveat', 'Patrick Hand', cursive;
   color-scheme: light;
 }
 

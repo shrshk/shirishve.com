@@ -14,6 +14,7 @@ Self-hosted from `public/fonts`, Latin subset, all under the SIL Open Font Licen
 | Newsreader     | Body           | https://github.com/productiontype/Newsreader |
 | Caveat         | Margin notes   | https://github.com/googlefonts/caveat        |
 | JetBrains Mono | Code and stats | https://github.com/JetBrains/JetBrainsMono   |
+| Patrick Hand   | Notebook pages | https://github.com/googlefonts/patrick-hand  |
 
 The WOFF2 files were taken from the Fontsource packages of each font.
 
