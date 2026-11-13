@@ -16,8 +16,10 @@ const TROUSER = '#4A4640';
 interface Props {
   /** How far along the stage's thread the kick happens (0 to 1). */
   at?: number;
+  /** The head cut from the photograph (`npm run head`), or a drawn one. */
+  photo?: boolean;
 }
-const { at } = Astro.props;
+const { at, photo = true } = Astro.props;
 ---
 
 <g class:list={['me', at !== undefined && 'cue']} data-at={at}>
@@ -96,43 +98,65 @@ const { at } = Astro.props;
   </g>
 
   <g class="me__head">
-    <ellipse cx="29.5" cy="34" rx="2.8" ry="4" fill={SKIN} stroke={SKIN_LINE} stroke-width="1.3"></ellipse>
-    <ellipse cx="70.5" cy="34" rx="2.8" ry="4" fill={SKIN} stroke={SKIN_LINE} stroke-width="1.3"></ellipse>
-    <path d={HEAD} fill={SKIN} stroke={SKIN_LINE} stroke-width="1.8"></path>
-    <!-- a short beard: a shadow over the jaw, not a solid shape -->
-    <clipPath id="me-face">
-      <path d={HEAD}></path>
-    </clipPath>
-    <path
-      clip-path="url(#me-face)"
-      d="M26,38 C32,43.5 37,43.5 42,42 C46,40.4 54,40.4 58,42 C63,43.5 68,43.5 74,38 L74,62 L26,62 Z"
-      fill={HAIR}
-      opacity="0.34"
-    ></path>
-    <path
-      d="M41.8,45.5 Q50,55 58.2,45.5 Q50,47.5 41.8,45.5 Z"
-      fill="#FFFDF6"
-      stroke={HAIR}
-      stroke-width="1"
-    ></path>
-    <!-- short sides, spikes on top -->
-    <path
-      d="M29.4,27.5 C28.6,18.5 32,12 38,9 L40.5,4 L44.5,7.5 L48.5,1 L52.5,6.5 L57.5,1 L60,6.5 L66,4 L65.5,10.5 C70,14.5 71.6,20.5 70.6,27.5 C67.5,20 60,16 50,16 C40,16 32.5,20 29.4,27.5 Z"
-      fill={HAIR}
-    ></path>
-    <path
-      d="M36,26.5 Q40,24.3 44.5,25.9 M55.5,25.9 Q60,24.3 64,26.5"
-      fill="none"
-      stroke={HAIR}
-      stroke-width="1.7"
-      stroke-linecap="round"
-    ></path>
-    <g class="me__eyes">
-      <circle cx="41" cy="33" r="2.5" fill={HAIR}></circle>
-      <circle cx="59" cy="33" r="2.5" fill={HAIR}></circle>
-      <circle cx="41.9" cy="32" r="0.9" fill="#fff"></circle>
-      <circle cx="59.9" cy="32" r="0.9" fill="#fff"></circle>
-    </g>
+    {photo ? (
+      <image href="/images/head.webp" x="18.5" y="-8.1" width="60.9" height="71.6" />
+    ) : (
+      <Fragment>
+        <ellipse
+          cx="29.5"
+          cy="34"
+          rx="2.8"
+          ry="4"
+          fill={SKIN}
+          stroke={SKIN_LINE}
+          stroke-width="1.3"
+        ></ellipse>
+        <ellipse
+          cx="70.5"
+          cy="34"
+          rx="2.8"
+          ry="4"
+          fill={SKIN}
+          stroke={SKIN_LINE}
+          stroke-width="1.3"
+        ></ellipse>
+        <path d={HEAD} fill={SKIN} stroke={SKIN_LINE} stroke-width="1.8"></path>
+        <!-- a short beard: a shadow over the jaw, not a solid shape -->
+        <clipPath id="me-face">
+          <path d={HEAD}></path>
+        </clipPath>
+        <path
+          clip-path="url(#me-face)"
+          d="M26,38 C32,43.5 37,43.5 42,42 C46,40.4 54,40.4 58,42 C63,43.5 68,43.5 74,38 L74,62 L26,62 Z"
+          fill={HAIR}
+          opacity="0.34"
+        ></path>
+        <path
+          d="M41.8,45.5 Q50,55 58.2,45.5 Q50,47.5 41.8,45.5 Z"
+          fill="#FFFDF6"
+          stroke={HAIR}
+          stroke-width="1"
+        ></path>
+        <!-- short sides, spikes on top -->
+        <path
+          d="M29.4,27.5 C28.6,18.5 32,12 38,9 L40.5,4 L44.5,7.5 L48.5,1 L52.5,6.5 L57.5,1 L60,6.5 L66,4 L65.5,10.5 C70,14.5 71.6,20.5 70.6,27.5 C67.5,20 60,16 50,16 C40,16 32.5,20 29.4,27.5 Z"
+          fill={HAIR}
+        ></path>
+        <path
+          d="M36,26.5 Q40,24.3 44.5,25.9 M55.5,25.9 Q60,24.3 64,26.5"
+          fill="none"
+          stroke={HAIR}
+          stroke-width="1.7"
+          stroke-linecap="round"
+        ></path>
+        <g class="me__eyes">
+          <circle cx="41" cy="33" r="2.5" fill={HAIR}></circle>
+          <circle cx="59" cy="33" r="2.5" fill={HAIR}></circle>
+          <circle cx="41.9" cy="32" r="0.9" fill="#fff"></circle>
+          <circle cx="59.9" cy="32" r="0.9" fill="#fff"></circle>
+        </g>
+      </Fragment>
+    )}
   </g>
 </g>
 
