@@ -18,7 +18,7 @@
     "head": "node scripts/cut-head.mjs"
   },
   "dependencies": {
-    "astro": "^7.4.11",
+    "astro": "^7.4.12",
     "js-yaml": "^5.5.0",
     "zod": "^4.6.7"
   },
